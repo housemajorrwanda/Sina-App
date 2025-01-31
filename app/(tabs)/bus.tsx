@@ -4,11 +4,15 @@ import { HelloWave } from '@/components/HelloWave';
 import ParallaxScrollView from '@/components/ParallaxScrollView';
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
+import PrimaryButton from '@/components/button/PrimaryButton';
+import Input from '@/components/input/Input';
+import LoginScreen from '../screen/LoginScreen';
 
-export default function HomeScreen() {
+export default function HomeScreens() {
   return (
-    <View className='h-screen flex flex-col items-center justify-center'>
-      <Text className='text-white font-bold text-2git initxl'>Sina app</Text>
+    <View className="flex-1 bg-white">
+    <LoginScreen/>
+      
     </View>
   );
 }
