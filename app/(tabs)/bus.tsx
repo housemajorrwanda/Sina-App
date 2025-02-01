@@ -7,11 +7,12 @@ import { ThemedView } from '@/components/ThemedView';
 import PrimaryButton from '@/components/button/PrimaryButton';
 import Input from '@/components/input/Input';
 import LoginScreen from '../screen/LoginScreen';
+import SignupScreen from '../screen/SignUpScreen';
 
 export default function HomeScreens() {
   return (
     <View className="flex-1 bg-white">
-    <LoginScreen/>
+    <SignupScreen/>
       
     </View>
   );

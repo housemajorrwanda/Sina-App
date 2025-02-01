@@ -8,8 +8,8 @@ interface CustomButtonProps {
 
 const PrimaryButton: React.FC<CustomButtonProps> = ({ title, onPress, className }) => {
   return (
-    <TouchableOpacity className={`w-full bg-primary p-4 rounded-full mt-4 ${className}`} onPress={onPress}>
-      <Text className="text-white text-center font-bold text-lg">{title}</Text>
+    <TouchableOpacity className={`w-full bg-primary p-3 rounded-full mt-4 ${className}`} onPress={onPress}>
+      <Text className="text-white text-center font-semiBold text-lg">{title}</Text>
     </TouchableOpacity>
   );
 };

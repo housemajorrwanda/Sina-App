@@ -84,12 +84,7 @@ export default function MealPlanScreen() {
       <TouchableOpacity className="bg-green-700 py-3 rounded-full mt-4" onPress={() => router.push('/screen/LoginScreen')}>
         <Text className="text-white text-center font-bold">Check Out</Text>
       </TouchableOpacity>
-      <View className="flex-row justify-around py-2 mt-2 border-t">
-        <FontAwesome name="home" size={24} color="green" />
-        <FontAwesome name="shopping-cart" size={24} color="green" />
-        <FontAwesome name="bus" size={24} color="green" />
-        <FontAwesome name="user" size={24} color="green" />
-      </View>
+ 
     </View>
   );
 }

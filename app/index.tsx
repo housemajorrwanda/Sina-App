@@ -9,7 +9,7 @@ import { useNavigation, useRouter } from "expo-router";
 const LoginScreen = () => {
     const [isChecked, setChecked] = useState(false);
     const router =useRouter()
-    const handleLogin = () => {
+    const SignUp = () => {
      
       // @ts-ignore
       router.replace("screen/SignUpScreen"); 
@@ -18,43 +18,52 @@ const LoginScreen = () => {
   return (
 <View className="flex-1 bg-white">
     <View>
-    <Image source={Icons.logo} className="w-32 h-32 mb-6" resizeMode="contain" />
-    <View className="w-full items-center mt-6">
-        <View>
-            <Text>LOG IN</Text>
+      <View className="items-center mt-10 ">
+    <Image source={Icons.logo} className="w-64 h-64 " resizeMode="contain" />
+
+      </View>
+    <View className="w-full items-center ">
+        <View className="items-center">
+            <Text className=" text-2xl font-bold">LOG IN</Text>
         <Text className="mt-4 text-gray-500">
         Don't have account? <Text className="text-primary font-semibold">Sign UP</Text>
       </Text>
         </View>
 
-      <View className="w-full flex-row justify-center space-x-4 mt-4">
+      <View className=" flex-row  justify-between px-6">
         {/* Google Sign-In */}
-        <View className="flex-row items-center bg-white px-4 py-3 rounded-lg shadow-md flex-1">
-          <View>
+        <View className="flex-row items-center bg-white px-2 py-3 rounded-md border border-black shadow-md flex-1">
+          <View >
           <Image source={Icons.google} className="w-6 h-6" resizeMode="contain" />
           </View>
-          <Text className="ml-3 text-gray-700"> with Google</Text>
+          <Text className="ml-3 text-gray-500"> with Google</Text>
         </View>
 
         {/* Apple Sign-In */}
-        <View className="flex-row items-center bg-white px-4 py-3 rounded-lg shadow-md flex-1">
+        <View className="flex-row items-center bg-white px-2 py-3 rounded-md border border-black shadow-md flex-1">
+
         <Image source={Icons.apple}  className="w-6 h-6" resizeMode="contain" />
-          <Text className="ml-3 text-gray-700">with Apple</Text>
+          <Text className="ml-3 text-gray-500">with Apple</Text>
         </View>
         
       </View>
-    <Text className="text-gray-500 text-base">Or Log with email</Text>
-
+    <View className="flex-row items-center my-4">
+      <View className="flex-1 h-[1px] bg-gray-400" />
+      <Text className="text-gray-400 text-base mx-2">or Log with email</Text>
+      <View className="flex-1 h-[1px] bg-gray-400" />
     </View>
     </View>
-    <View className="flex-1 bg-gray-200 px-6 py-10 items-center justify-center">
-      <View className="w-full space-y-4">
-        <Input iconName="user" placeholder="Email or phone number" />
+    </View>
+    <View className="flex-1 bg-white px-6 py-4 ">
+      <View >
+        <Input iconName="user" placeholder="Email or phone number" className="bg-green-100 border border-gray-200" />
         <Input iconName="lock" placeholder="Password" secureTextEntry className="bg-green-100 border border-primary" />
       </View>
 
       
-      <Text className="mt-4 text-gray-500">
+
+       <View className="items-center">
+       <Text className="mt-4 text-gray-500">
         Forgot Password? <Text className="text-primary font-semibold">Get Help</Text>
       </Text>
 
@@ -64,20 +73,21 @@ const LoginScreen = () => {
       onPress={()=> {
         router.push("/(tabs)/home")
        } } />
+       </View>
     </View>
-    <View>
-    <Image source={Icons.finger} className="w-32 h-32 mb-6" resizeMode="contain" />
-
-    </View>
-    <View className="flex-row items-center mt-2">
+    <View className="items-center ">
+    <Image source={Icons.finger} className="w-16 h-16 mb-6" resizeMode="contain" />
+    <View className="flex-row items-center mt-1">
       <Checkbox
         className="mr-2"
         value={isChecked}
-        color={isChecked ? "#93BD68" : undefined} // Use green color when checked
+        color={isChecked ? "#93BD68" : undefined} 
         onValueChange={setChecked}
       />
       <Text className="text-gray-700">Terms of services Privacy Policy</Text>
     </View>
+    </View>
+
 </View>
   );
 };

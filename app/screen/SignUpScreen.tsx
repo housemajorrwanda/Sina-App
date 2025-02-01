@@ -5,14 +5,16 @@ import Icons from "@/constants/Icons";
 
 const SignupScreen = () => {
   return (
-<View className="flex-1 bg-white">
+<View className="flex-1 bg-gray-200">
 <View>
-          <Image source={Icons.logo} className="w-32 h-32 mb-6" resizeMode="contain" />
+            <View className="items-center mt-10 ">
+          <Image source={Icons.logo} className="w-64 h-64 " resizeMode="contain" />
       
+            </View>
     </View>
-    <View className="flex-1 bg-gray-200 px-6 py-10 items-center justify-center">
+    <View className="flex- bg-gray-200 px-6 py-10 items-center justify-between">
       {/* Input Fields */}
-      <View className="w-full space-y-4">
+      <View className="flex justify-between w-full space-y-4">
         <Input iconName="user" placeholder="Enter full name" />
         <Input iconName="email" placeholder="Email" keyboardType="email-address" />
         <Input iconName="phone" placeholder="Phone number" keyboardType="phone-pad" />
