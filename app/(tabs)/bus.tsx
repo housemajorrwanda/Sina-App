@@ -1,38 +1,35 @@
-import { Image, StyleSheet, Platform,View,Text} from 'react-native';
+import { AntDesign, Entypo } from "@expo/vector-icons";
+import Checkbox from "expo-checkbox";
+import React, { useState } from "react";
+import { View, Text, Image, TextInput, TouchableOpacity, ScrollView } from "react-native";
 
-import { HelloWave } from '@/components/HelloWave';
-import ParallaxScrollView from '@/components/ParallaxScrollView';
-import { ThemedText } from '@/components/ThemedText';
-import { ThemedView } from '@/components/ThemedView';
-import PrimaryButton from '@/components/button/PrimaryButton';
-import Input from '@/components/input/Input';
-import LoginScreen from '../screen/LoginScreen';
-import SignupScreen from '../screen/SignUpScreen';
-
-export default function HomeScreens() {
-  return (
-    <View className="flex-1 bg-white">
-    <SignupScreen/>
-      
-    </View>
-  );
+interface ExtraItem {
+  name: string;
+  price: string;
 }
 
-const styles = StyleSheet.create({
-  titleContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 8,
-  },
-  stepContainer: {
-    gap: 8,
-    marginBottom: 8,
-  },
-  reactLogo: {
-    height: 178,
-    width: 290,
-    bottom: 0,
-    left: 0,
-    position: 'absolute',
-  },
-});
+const extras: ExtraItem[] = [
+  { name: "Peanuts Butter", price: "2000 Rwf" },
+  { name: "Salad", price: "3500 Rwf" },
+  { name: "Spices", price: "300 Rwf" },
+];
+
+const MenuDetailsScreen: React.FC = () => {
+  const [quantity, setQuantity] = useState<number>(2);
+  const [checkedItems, setCheckedItems] = useState<{ [key: string]: boolean }>({});
+
+  const toggleCheckbox = (name: string) => {
+    setCheckedItems((prev) => ({
+      ...prev,
+      [name]: !prev[name],
+    }));
+  };
+
+  return (
+<View>
+  <Text>hello world</Text>
+</View>
+  );
+};
+
+export default MenuDetailsScreen;

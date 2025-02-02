@@ -19,44 +19,52 @@ const LoginScreen = () => {
 <View className="flex-1 bg-white">
     <View>
       <View className="items-center mt-10 ">
-    <Image source={Icons.logo} className="w-64 h-64 " resizeMode="contain" />
+    <Image source={Icons.logo} className="w-58 h-58 " resizeMode="contain" />
 
       </View>
     <View className="w-full items-center ">
         <View className="items-center">
             <Text className=" text-2xl font-bold">LOG IN</Text>
-        <Text className="mt-4 text-gray-500">
-        Don't have account? <Text className="text-primary font-semibold">Sign UP</Text>
-      </Text>
-        </View>
 
-      <View className=" flex-row  justify-between px-6">
+<Text className="mt-4 text-gray-500">
+        Don't have account? <Text       
+        onPress={()=> {
+      // @ts-ignore
+      
+        router.push("screen/SignUpScreen")
+       } } className="text-primary font-semibold">Sign UP</Text>
+      </Text>
+
+        </View>
+    </View>
+
+
+      <View className=" flex-row items-center justify-between p-6">
         {/* Google Sign-In */}
-        <View className="flex-row items-center bg-white px-2 py-3 rounded-md border border-black shadow-md flex-1">
+        <View className="flex-row items-center bg-white px-2 py-3 rounded-md border border-black  px-4 ">
           <View >
-          <Image source={Icons.google} className="w-6 h-6" resizeMode="contain" />
+          <Image source={Icons.google}  resizeMode="contain" />
           </View>
-          <Text className="ml-3 text-gray-500"> with Google</Text>
+          <Text className=" px-4 text-gray-500"> with Google</Text>
         </View>
 
         {/* Apple Sign-In */}
-        <View className="flex-row items-center bg-white px-2 py-3 rounded-md border border-black shadow-md flex-1">
+        <View className="flex-row items-center bg-white pr-6 px-4 py-3 rounded-md border border-black shadow-md ">
 
-        <Image source={Icons.apple}  className="w-6 h-6" resizeMode="contain" />
-          <Text className="ml-3 text-gray-500">with Apple</Text>
+        <Image source={Icons.apple}   resizeMode="contain" />
+          <Text className="px-4 text-gray-500">with Apple</Text>
         </View>
         
       </View>
-    <View className="flex-row items-center my-4">
+    <View className="flex-row items-center  px-6">
       <View className="flex-1 h-[1px] bg-gray-400" />
       <Text className="text-gray-400 text-base mx-2">or Log with email</Text>
       <View className="flex-1 h-[1px] bg-gray-400" />
     </View>
     </View>
-    </View>
-    <View className="flex-1 bg-white px-6 py-4 ">
-      <View >
-        <Input iconName="user" placeholder="Email or phone number" className="bg-green-100 border border-gray-200" />
+    <View className="bg-white px-6 py-4 ">
+      <View className="space-y-4 items-center">
+        <Input iconName="user" placeholder="Email or phone number" className="bg-green-100 border border-gray-200 my-4" />
         <Input iconName="lock" placeholder="Password" secureTextEntry className="bg-green-100 border border-primary" />
       </View>
 
