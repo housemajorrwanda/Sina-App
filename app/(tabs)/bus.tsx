@@ -26,8 +26,8 @@ const MenuDetailsScreen: React.FC = () => {
   };
 
   return (
-<View>
-  <Text>hello world</Text>
+<View className="flex flex-col flex-1 items-center justify-center">
+  <Text className="text-white">hello world</Text>
 </View>
   );
 };
