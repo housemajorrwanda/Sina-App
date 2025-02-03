@@ -7,7 +7,9 @@ import {
   Image,
   TouchableOpacity,
   Dimensions,
-  Alert
+  Alert,
+  Platform,
+  StyleSheet
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import MapView, { Marker, Region } from "react-native-maps";
@@ -181,7 +183,7 @@ const index = () => {
                 </TouchableOpacity>
               </View>
             </View>
-            <View className="flex-1 rounded-t-2xl  mx-auto py-3 bg-bg_second w-full flex flex-col items-center justify-center">
+            <View className="flex-1 rounded-t-2xl py-10 mx-auto bg-bg_second w-full flex flex-col items-center justify-center" style={styles.ViewPadding}>
               <View className="w-[90%] flex flex-col items-center">
                 <View className="items-center justify-center flex flex-col">
                   <Text className="text-lg font-bold">
@@ -240,5 +242,9 @@ const index = () => {
     </View>
   );
 };
-
+const styles=StyleSheet.create({
+  ViewPadding:{
+    paddingBottom:Platform.OS =='ios'?Dimensions.get('screen').height * 0.09:0
+  }
+})
 export default index;

@@ -175,12 +175,13 @@ const CombinedScreen = () => {
   }
 
   return (
-    <View className="flex-1 bg-white p-4">
+    <View className="flex-1  bg-white p-4">
       {payment && <Payment modal_status={payment} total={totalPrice} onRequestClose={()=>setPayment(false)} />}
       <Text className="text-secondary text-center text-2xl font-bold my-10">
         Checkout
       </Text>
-      <ScrollView>
+      <View>
+        <ScrollView>
         {products.map((product) => (
           <TouchableOpacity
             key={product.id}
@@ -217,7 +218,8 @@ const CombinedScreen = () => {
             </View>
           </TouchableOpacity>
         ))}
-      </ScrollView>
+        </ScrollView>
+      </View>
 
       <View className="bg-white p-4 my-8 rounded-3xl border border-secondary border-b-4">
         <View className="flex-row items-center justify-between pr-4">

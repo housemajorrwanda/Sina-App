@@ -34,7 +34,7 @@ export default function TabLayout() {
             shadowRadius: 10,
             borderTopWidth: 0,
             borderTopColor: "#2B6128",
-            height: 60
+            height:Dimensions.get('screen').height * 0.08
           },
           android: {
             backgroundColor: "white",
@@ -55,7 +55,7 @@ export default function TabLayout() {
         { name: "home", icon: HomeIconTab, inactiveIcon: HomeInactive },
         { name: "meal", icon: Meal, inactiveIcon: MealUnactive },
         { name: "cart", icon: Checkout, inactiveIcon: CheckOutUnactive },
-        { name: "(bus)", icon: Bus, inactiveIcon: BusUnactiive },
+        { name: "(Bus)", icon: Bus, inactiveIcon: BusUnactiive },
         { name: "accounts", icon: ProfileIcon, inactiveIcon: ProfileUnactive }
       ].map((item: any, index: number) => (
         <Tabs.Screen
