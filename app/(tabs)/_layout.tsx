@@ -1,70 +1,90 @@
-import { Tabs } from 'expo-router';
-import React from 'react';
-import { Platform, View } from 'react-native';
-import { HapticTab } from '@/components/HapticTab';
-import { useColorScheme } from '@/hooks/useColorScheme';
-import { Feather, FontAwesome5, FontAwesome6, MaterialCommunityIcons } from '@expo/vector-icons';
+import { Tabs } from "expo-router";
+import React from "react";
 
+import { HapticTab } from "@/components/HapticTab";
+import { useColorScheme } from "@/hooks/useColorScheme";
+import { Platform, View, Dimensions } from "react-native";
+import Checkout from "@/assets/images/payment/Checkout.svg";
+import CheckOutUnactive from "@/assets/images/payment/Checkout_unactive.svg";
+import Bus from "@/assets/images/payment/bus-toy.svg";
+import BusUnactiive from "@/assets/images/payment/bus-toy_unactive.svg";
+import HomeIconTab from "@/assets/images/payment/Home.svg";
+import HomeInactive from "@/assets/images/payment/Home_unactive.svg";
+import Meal from "@/assets/images/payment/meal.svg";
+import MealUnactive from "@/assets/images/payment/meal_unactive.svg";
+import ProfileIcon from "@/assets/images/payment/profile.svg";
+import ProfileUnactive from "@/assets/images/payment/profile_unactive.svg";
 export default function TabLayout() {
   const colorScheme = useColorScheme();
+  const tabBarHeight = Dimensions.get("screen").height * 0.08;
 
   return (
     <Tabs
       screenOptions={{
-        tabBarActiveTintColor: '#2B6128',
-        tabBarInactiveTintColor: '#2B6128',
+        // tabBarActiveTintColor: "#2B6128",
+        // tabBarInactiveTintColor: "#2B6128",
         headerShown: false,
         tabBarShowLabel: false, // Hides labels
         tabBarButton: HapticTab,
         tabBarStyle: Platform.select({
           ios: {
-            position: 'absolute',
-            backgroundColor: 'white',
+            position: "absolute",
+            backgroundColor: "white",
             shadowOpacity: 0.1,
             shadowRadius: 10,
             borderTopWidth: 0,
-            borderTopColor: '#2B6128',
-            height: 60, 
+            borderTopColor: "#2B6128",
+            height: 60
           },
           android: {
-            backgroundColor: 'white',
-            elevation: 8,
-            borderTopWidth: 3,
-            widthColor:"#2B6128",
+            backgroundColor: "white",
+            // elevation: 8,
+            borderTopWidth: 1,
+            widthColor: "#2B6128",
             shadowOpacity: 0.1,
-            height: 60, 
-            
-          },
-        }),
+            height: Dimensions.get('screen').height * 0.08,
+            display: "flex",
+            flexDirection: 'column',
+            alignItems: 'center',
+            justifyContent: 'center',
+          }
+        })
       }}
     >
       {[
-        { name: 'home', icon: Feather, iconName: 'home' },
-        { name: 'meal', icon: FontAwesome6, iconName: 'plate-wheat' },
-        { name: 'cart', icon: FontAwesome5, iconName: 'shopping-cart' },
-        { name: 'bus', icon: MaterialCommunityIcons, iconName: 'bus-side' },
-        { name: 'accounts', icon: FontAwesome5, iconName: 'user-alt' },
-      ].map(({ name, icon: Icon, iconName }) => (
+        { name: "home", icon: HomeIconTab, inactiveIcon: HomeInactive },
+        { name: "meal", icon: Meal, inactiveIcon: MealUnactive },
+        { name: "cart", icon: Checkout, inactiveIcon: CheckOutUnactive },
+        { name: "(bus)", icon: Bus, inactiveIcon: BusUnactiive },
+        { name: "accounts", icon: ProfileIcon, inactiveIcon: ProfileUnactive }
+      ].map((item: any, index: number) => (
         <Tabs.Screen
-          key={name}
-          name={name}
+          key={index}
+          name={item.name}
           options={{
             tabBarIcon: ({ focused }) => (
-              <View
-                className={`items-center justify-center p-1 rounded-full  ${
-                  focused ? 'bg-[#2B6128]' : 'bg-transparent'
-                }`}
+              <View className="rounded-full flex flex-col items-center justify-center"
                 style={{
-                  width: 60, // Ensures proper size
-                  height: 60, // Ensures proper size
+                  alignItems: "center",
+                  justifyContent: "center",
+                  width: Dimensions.get("window").width * 0.14,
+                  height: Dimensions.get("window").width * 0.14,
+                  backgroundColor: focused ? "#2B6128" : "transparent",
+                  marginTop: Dimensions.get("window").height * 0.023
+                  // borderRadius: 9999
                 }}
               >
-                <Icon name={iconName} size={28} color={focused ? 'white' : '#2B6128'} />
+                {focused ? (
+                  <item.icon  />
+                ) : (
+                  <item.inactiveIcon  />
+                )}
               </View>
-            ),
+            )
           }}
         />
       ))}
+      
     </Tabs>
   );
 }
