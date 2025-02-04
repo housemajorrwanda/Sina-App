@@ -17,8 +17,9 @@ import {
   MaterialIcons,
   SimpleLineIcons
 } from "@expo/vector-icons";
-// @ts-ignore
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+// @ts-ignore
+
 import Student from "../../assets/images/student.webp";
 
 const SettingsScreen = () => {

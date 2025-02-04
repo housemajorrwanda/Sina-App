@@ -2,6 +2,8 @@ import { View, Text, TextInput, FlatList, Image, TouchableOpacity, ScrollView } 
 import { useState } from 'react';
 import { Feather, FontAwesome, FontAwesome6, Octicons } from '@expo/vector-icons';
 import { router } from 'expo-router';
+import { useSafeAreaInsets } from "react-native-safe-area-context";
+
 
 const categories = [
   { name: 'Salad', items: [
@@ -38,6 +40,8 @@ const categories = [
 
 export default function MealPlanScreen() {
   const [expandedCategories, setExpandedCategories] = useState(['Salad']);
+    const insets = useSafeAreaInsets();
+  
 
   const toggleCategory = (category: string) => {
     setExpandedCategories((prev) =>
@@ -46,8 +50,8 @@ export default function MealPlanScreen() {
   };
 
   return (
-    <View className="flex-1 bg-white px-4 py-2">
-      <View className="flex-row items-center justify-between mt-10">
+    <View className="flex-1 bg-white px-4 pb-2" style={{ paddingTop: insets.top }}>
+      <View className="flex-row items-center justify-between ">
       <View className='bg-gray-300 p-2 rounded-full'>
 <FontAwesome6 name="sliders" size={24} color="#2B6128" />
 

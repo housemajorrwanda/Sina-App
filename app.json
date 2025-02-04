@@ -12,7 +12,15 @@
       "supportsTablet": true,
       "config": {
         "googleMapsApiKey": "AIzaSyDPn_ruf8ZU47SAarpAiOj9RaSl_2q75qY"
-      }
+      },
+      "adaptiveIcon": {
+        "backgroundColor": "#2B6128"
+        
+      },
+      
+        "splash": {
+          "backgroundColor": "#2B6128"
+        }
     },
     "android": {
       "adaptiveIcon": {

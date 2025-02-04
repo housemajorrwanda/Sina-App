@@ -32,7 +32,7 @@ const LoginScreen = () => {
       // @ts-ignore
       
         router.push("screen/SignUpScreen")
-       } } className="text-primary font-semibold">Sign UP</Text>
+       } } className="text-secondary font-semibold">Sign UP</Text>
       </Text>
 
         </View>
@@ -72,7 +72,7 @@ const LoginScreen = () => {
 
        <View className="items-center">
        <Text className="mt-4 text-gray-500">
-        Forgot Password? <Text className="text-primary font-semibold">Get Help</Text>
+        Forgot Password? <Text className="text-secondary font-semibold">Get Help</Text>
       </Text>
 
       {/* Sign Up Button */}

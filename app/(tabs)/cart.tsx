@@ -21,6 +21,8 @@ interface Product {
   quantity: number;
   image: any;
 }
+import { useSafeAreaInsets } from "react-native-safe-area-context";
+
 
 const products: Product[] = [
   {
@@ -64,6 +66,8 @@ const CombinedScreen = () => {
   const [checkedItems, setCheckedItems] = useState<{ [key: string]: boolean }>(
     {}
   );
+    const insets = useSafeAreaInsets();
+  
   
   const updateQuantity = (id: number, type: "increase" | "decrease") => {
     setQuantities((prev) => ({
@@ -88,9 +92,9 @@ const CombinedScreen = () => {
 
   if (selectedProduct) {
     return (
-      <ScrollView className="flex-1 bg-white">
-        <View className="bg-orange-500 p-4 rounded-b-3xl">
-          <View className="flex-row mt-4">
+      <ScrollView className="flex-1 bg-orange-500 " style={{ paddingTop: insets.top}}>
+        <View className="bg-orange-500 px-4">
+          <View className="flex-row">
             <TouchableOpacity
               className="p-2 bg-gray-300 rounded-full"
               onPress={() => setSelectedProduct(null)}
@@ -99,15 +103,16 @@ const CombinedScreen = () => {
             </TouchableOpacity>
             <View></View>
           </View>
-          <View className="items-center m-4 mb-8">
+          <View className="items-center">
             <Image
               source={selectedProduct.image}
-              className="w-32 h-48 rounded-full"
+              className="w-48 h-48 rounded-full"
+              resizeMode="cover" 
             />
           </View>
         </View>
 
-        <View className="px-4 py-6 bg-white rounded-t-3xl -mt-6">
+        <View className="px-4 py-6 bg-white h-full rounded-t-3xl mt-8">
           <View className="flex-row justify-between items-center">
             <Text className="text-lg font-bold">{selectedProduct.name}</Text>
             <View className="flex-row items-center bg-gray-200 rounded-full px-1 py-1">
@@ -128,14 +133,14 @@ const CombinedScreen = () => {
             </View>
           </View>
 
-          <Text className="bg-green-100 p-3 rounded-3xl mt-3 text-gray-600">
+          <Text className="bg-green-100 p-4 rounded-3xl mt-3 text-gray-600">
             Lorem ipsum dolor sit amet consectetur. Eget amet vestibulum
             tincidunt elit. In feugiat est faucibus cursus enim accumsan sed
             nunc lorem. Interdum dolor.Lorem ipsum dolor sit amet consectetur.
             Eget amet vestibulum
           </Text>
-          <View className="flex-row justify-between mt-4">
-            <View className="items-center">
+          <View className="flex-row justify-between m-8">
+            <View className="items-center ">
               <Text className="font-bold">Order sent</Text>
               <Text className="text-gray-600">09:00 am</Text>
             </View>
@@ -148,24 +153,29 @@ const CombinedScreen = () => {
               <Text className="text-gray-600">11:00 am</Text>
             </View>
           </View>
-          <Text className="font-bold mt-4">Add extra request</Text>
+          <Text className="font-bold my-4">Add extra request</Text>
           {extras.map((item) => (
-            <View key={item.name} className="flex-row justify-between mt-1">
+            <View key={item.name} className="flex-row justify-between mt-1 my-2">
               <View className="flex-row items-center">
                 <Checkbox
                   value={checkedItems[item.name] || false}
                   color={checkedItems[item.name] ? "#F1A10C" : undefined}
                   onValueChange={() => toggleCheckbox(item.name)}
+                  style={{
+                    width: 20, 
+                    height: 20, 
+                    borderRadius: 10, 
+                  }}
                 />
                 <Text className="text-gray-700 ml-2">{item.name}</Text>
               </View>
               <Text className="text-gray-700">{item.price}</Text>
             </View>
           ))}
-          <Text className="font-bold mt-4">Add Notes</Text>
+          <Text className="font-bold my-4">Add Notes</Text>
           <TextInput
             placeholder="Write your note"
-            className="bg-green-100 p-3 rounded-3xl mt-2 h-20"
+            className="bg-green-100 p-4 rounded-3xl mt-2 h-20"
             multiline
             textAlignVertical="top"
           />
@@ -175,7 +185,7 @@ const CombinedScreen = () => {
   }
 
   return (
-    <View className="flex-1  bg-white p-4">
+    <View className="flex-1  bg-white p-4" style={{ paddingTop: insets.top }}>
       {payment && <Payment modal_status={payment} total={totalPrice} onRequestClose={()=>setPayment(false)} />}
       <Text className="text-secondary text-center text-2xl font-bold my-10">
         Checkout
