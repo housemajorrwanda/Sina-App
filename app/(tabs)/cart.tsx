@@ -175,6 +175,7 @@ const CombinedScreen = () => {
           <Text className="font-bold my-4">Add Notes</Text>
           <TextInput
             placeholder="Write your note"
+             placeholderTextColor="gray"
             className="bg-green-100 p-4 rounded-3xl mt-2 h-20"
             multiline
             textAlignVertical="top"

@@ -40,14 +40,14 @@ const SettingsScreen = () => {
         <View className="flex-1">
           <View className="bg-secondary p-6  items-center">
             <View className="flex-row w-full justify-between items-center mb-4">
-              <View className="bg-white p-2 rounded-full">
+              <TouchableOpacity className="bg-white p-2 rounded-full">
                 <FontAwesome6 name="sliders" size={24} color="#2B6128" />
-              </View>
+              </TouchableOpacity>
 
               {/* <Ionicons name="notifications-circle" size={24} color="white" /> */}
-              <View className="bg-white p-2 rounded-full">
+              <TouchableOpacity className="bg-white p-2 rounded-full">
                 <Ionicons name="notifications" size={24} color="#2B6128" />
-              </View>
+              </TouchableOpacity>
             </View>
             <View className="flex-row  justify-between">
               <Image source={Student} className="w-20 h-20 rounded-full " />

@@ -23,6 +23,7 @@ import {
 
 import Student from "../../assets/images/student.webp";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { router } from "expo-router";
 
 
 
@@ -300,19 +301,20 @@ const HomeScreen = () => {
       {isSeeAll ? (
         <ScrollView className="flex-1">
           <View className="flex-row items-center justify-between mx-4">
-            <View className="bg-gray-300 p-2 rounded-full">
+            <TouchableOpacity className="bg-gray-300 p-2 rounded-full">
               <FontAwesome6 name="sliders" size={24} color="#2B6128" />
-            </View>
+            </TouchableOpacity>
             <View className="items-center">
               <Text>Current Location</Text>
 <View className="flex-row items-center">
+
 <MaterialCommunityIcons name="map-marker" size={24} color="#2B6128" />
 <Text>Shorongi, Kigali</Text>
 </View>
             </View>
-            <View className="bg-gray-300 p-2 rounded-full">
+            <TouchableOpacity className="bg-gray-300 p-2 rounded-full">
               <FontAwesome name="bell" size={24} color="green" />
-            </View>
+            </TouchableOpacity>
           </View>
 
           {/* Header Section */}
@@ -344,6 +346,8 @@ const HomeScreen = () => {
             <Octicons name="search" size={24} color="black" />
             <TextInput
               placeholder="Search Products"
+         placeholderTextColor="#2B6128"
+
               className="text-secondary flex-1 px-3"
             />
             <FontAwesome6 name="sliders" size={24} color="#2B6128" />
@@ -428,6 +432,8 @@ const HomeScreen = () => {
             <Octicons name="search" size={24} color="black" />
             <TextInput
               placeholder="Search Products"
+         placeholderTextColor="#2B6128"
+
               className="text-secondary flex-1 px-3"
             />
             <FontAwesome6 name="sliders" size={24} color="#2B6128" />
@@ -435,10 +441,13 @@ const HomeScreen = () => {
 
           {/* Special Order Button */}
           <View className="flex-row items-center justify-between mx-6">
-            <TouchableOpacity className="bg-secondary p-2 rounded-full mx-2 mt-3 flex items-center">
+            <TouchableOpacity className="bg-secondary p-2 rounded-full mx-2 mt-3 flex items-center" onPress={() => router.push('meal')}>
               <Text className="text-white font-semiBold">Special Order</Text>
             </TouchableOpacity>
+            <TouchableOpacity onPress={() => router.push('cart')}>
             <FontAwesome5 name="shopping-cart" size={24} color="#2B6128" />
+
+            </TouchableOpacity>
           </View>
 
           {/* Categories */}

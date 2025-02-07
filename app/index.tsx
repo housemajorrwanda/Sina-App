@@ -5,18 +5,16 @@ import Icons from "@/constants/Icons";
 import { useState } from "react";
 import Checkbox from "expo-checkbox";
 import { useNavigation, useRouter } from "expo-router";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 const LoginScreen = () => {
     const [isChecked, setChecked] = useState(false);
+      const insets = useSafeAreaInsets();
+    
     const router =useRouter()
-    const SignUp = () => {
-     
-      // @ts-ignore
-      router.replace("screen/SignUpScreen"); 
-    };
-    const navigation = useNavigation();
+
   return (
-<View className="flex-1 bg-white">
+<View className="flex-1 bg-white" style={{ paddingTop: insets.top }}>
     <View>
       <View className="items-center mt-10 ">
     <Image source={Icons.logo} className="w-58 h-58 " resizeMode="contain" />
@@ -64,7 +62,9 @@ const LoginScreen = () => {
     </View>
     <View className="bg-white px-6 py-4 ">
       <View className="space-y-4 items-center">
-        <Input iconName="user" placeholder="Email or phone number" className="bg-green-100 border border-gray-200 my-4" />
+        <Input iconName="user" 
+        placeholder="Email or phone number" 
+        className="bg-black border border-gray-200 my-4" />
         <Input iconName="lock" placeholder="Password" secureTextEntry className="bg-green-100 border border-primary" />
       </View>
 

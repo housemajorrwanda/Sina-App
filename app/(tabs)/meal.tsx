@@ -51,16 +51,16 @@ export default function MealPlanScreen() {
 
   return (
     <View className="flex-1 bg-white px-4 pb-2" style={{ paddingTop: insets.top }}>
-      <View className="flex-row items-center justify-between ">
-      <View className='bg-gray-300 p-2 rounded-full'>
+      <View className="flex-row items-center justify-between pt-4 ">
+      <TouchableOpacity className='bg-gray-300 p-2 rounded-full'>
 <FontAwesome6 name="sliders" size={24} color="#2B6128" />
 
-</View>
-<View className='bg-gray-300 p-2 rounded-full'>
+</TouchableOpacity>
+<TouchableOpacity className='bg-gray-300 p-2 rounded-full'>
 <FontAwesome name="bell" size={24} color="green" />
 
 
-</View>
+</TouchableOpacity>
 
       </View>
       <View className="px-5 mt-3 flex-row items-center bg-white rounded-full py-2 mx-4  mb-3 border-b-4 border-l border-r border-secondary">
@@ -97,7 +97,7 @@ export default function MealPlanScreen() {
           </View>
         ))}
       </ScrollView>
-      <TouchableOpacity className="bg-secondary px-3 py-3 rounded-full" onPress={() => router.push('/screen/LoginScreen')}>
+      <TouchableOpacity className="bg-secondary px-3 py-3 rounded-full" onPress={() => router.push('cart')}>
         <Text className="text-white text-2xl text-center font-bold">Check Out</Text>
       </TouchableOpacity>
  

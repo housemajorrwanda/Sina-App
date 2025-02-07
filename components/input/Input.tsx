@@ -17,7 +17,7 @@ const Input: React.FC<InputFieldProps> = ({ iconName, placeholder, keyboardType 
 {/* @ts-ignore */}
 
       <IconComponent name={iconName} size={24} color="gray" />
-      <TextInput className="ml-3 flex-1 text-gray-700" placeholder={placeholder} keyboardType={keyboardType} secureTextEntry={secureTextEntry} />
+      <TextInput className="ml-3 flex-1 text-gray-700" placeholder={placeholder} keyboardType={keyboardType} secureTextEntry={secureTextEntry}  placeholderTextColor="gray" />
     </View>
   );
 };
