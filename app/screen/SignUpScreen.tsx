@@ -3,9 +3,12 @@ import Input from "@/components/input/Input";
 import PrimaryButton from "@/components/button/PrimaryButton";
 import Icons from "@/constants/Icons";
 import index from '../index'
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 const SignupScreen = () => {
+        const insets = useSafeAreaInsets();
+  
   return (
-<View className="flex-1 bg-gray-200">
+<View className="flex-1 bg-gray-200" style={{ paddingTop: insets.top }}>
 <View>
             <View className="items-center mt-10 pt-3 ">
           <Image source={Icons.logo} className="w-58 h-58 " resizeMode="contain" />

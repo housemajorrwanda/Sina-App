@@ -57,7 +57,7 @@ export default function CardPayment() {
             <Text className="font-bold text-lg">{amount} Rwf</Text>
           </View>
         </View>
-        <TouchableOpacity className="bg-pomme_green w-[90%] mx-auto py-3 flex flex-col items-center justify-center rounded-full">
+        <TouchableOpacity className="bg-secondary w-[90%] mx-auto py-3 flex flex-col items-center justify-center rounded-full">
             <Text className="text-white font-bold">Pay</Text>
         </TouchableOpacity>
       </View>
