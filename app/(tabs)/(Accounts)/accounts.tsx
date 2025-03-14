@@ -18,15 +18,34 @@ import {
   SimpleLineIcons
 } from "@expo/vector-icons";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+import PersonalInformation from "./Modals/Personalnformation";
 // @ts-ignore
-
-import Student from "../../assets/images/student.webp";
+import { useSelector } from "react-redux";
+import Security from "./Modals/Security";
+import Notification from "./Modals/Notification";
+import SocialMedia from "./Modals/SocialMedia";
+import AskUs from "./Modals/Askus";
+import PhoneDetails from "./Modals/PhoneDetails";
+// import Student from "../../../assets/images/student.webp";
 
 const SettingsScreen = () => {
+  const user=useSelector((state:any)=>state.login?.user)
   const [locationEnabled, setLocationEnabled] = useState(false);
+  const [personalInformationVisible, setPersonalInformationVisible] = useState(false);
+  const [security, setSecurity] = useState(false);
+  const [notification, setNotification] = useState(false);
+  const [socialMedia, setSocialMedia] = useState(false);
+  const [askUs, setAskUs] = useState(false);
+  const [phoneDetails, setPhoneDetails] = useState(false);
   const insets = useSafeAreaInsets();
   return (
     <View className="flex-1 bg-secondary" style={{ paddingTop: insets.top }}>
+      <PersonalInformation visible={personalInformationVisible} setClosed={(e:boolean) => setPersonalInformationVisible(e)} />
+      <Security visible={security} setClosed={(e:boolean) => setSecurity(e)} />
+      <Notification visible={notification} setClosed={(e:boolean) => setNotification(e)} />
+      <SocialMedia visible={socialMedia} setClosed={(e:boolean) => setSocialMedia(e)} />
+      <AskUs visible={askUs} setClosed={(e:boolean) => setAskUs(e)} />
+      <PhoneDetails visible={phoneDetails} setClosed={(e:boolean) => setPhoneDetails(e)} />
       <ScrollView
         scrollEnabled
         className="flex-1 "
@@ -50,13 +69,13 @@ const SettingsScreen = () => {
               </TouchableOpacity>
             </View>
             <View className="flex-row  justify-between">
-              <Image source={Student} className="w-20 h-20 rounded-full " />
+              <Image source={{uri:user?.user_data?.profile}} className="w-20 h-20  border border-third rounded-full " />
               <View className="items-center">
                 <Text className="text-lg text-white font-bold mt-2">
-                  Jayson KAMUGWERA
+                  {user?.user_data?.full_name || 'Add Full Names'}
                 </Text>
-                <Text className="text-white text-sm">kamujayson@gmail.com</Text>
-                <Text className="text-white text-sm">+2507845100</Text>
+                <Text className="text-white text-sm">{user?.user_data?.email || 'Add Email'}</Text>
+                <Text className="text-white text-sm">{user?.user_data?.phone_number ?? 'Add Phone Number'}</Text>
               </View>
             </View>
           </View>
@@ -68,7 +87,7 @@ const SettingsScreen = () => {
                 Account Settings
               </Text>
 
-              <TouchableOpacity className="flex-row items-center pb-3 justify-between">
+              <TouchableOpacity onPress={()=>setPersonalInformationVisible(!personalInformationVisible)} className="flex-row items-center pb-3 justify-between">
                 <View className="flex-row items-center">
                   <MaterialCommunityIcons
                     name="account"
@@ -86,7 +105,7 @@ const SettingsScreen = () => {
                 />
               </TouchableOpacity>
 
-              <TouchableOpacity className="flex-row items-center py-3 justify-between">
+              <TouchableOpacity onPress={()=>setSecurity(!security)} className="flex-row items-center py-3 justify-between">
                 <View className="flex-row items-center">
                   <MaterialIcons
                     name="verified-user"
@@ -104,7 +123,7 @@ const SettingsScreen = () => {
                 />
               </TouchableOpacity>
 
-              <TouchableOpacity className="flex-row items-center pt-3 justify-between">
+              <TouchableOpacity onPress={()=>setNotification(!notification)} className="flex-row items-center pt-3 justify-between">
                 <View className="flex-row items-center">
                   <Ionicons name="notifications" size={24} color="#2B6128" />
                   <Text className="ml-4 text-gray-700">
@@ -125,7 +144,7 @@ const SettingsScreen = () => {
                 Contact Settings
               </Text>
 
-              <TouchableOpacity className="flex-row items-center py-3 justify-between">
+              <TouchableOpacity onPress={()=>setSocialMedia(!socialMedia)} className="flex-row items-center py-3 justify-between">
                 <View className="flex-row items-center">
                   <AntDesign name="instagram" size={24} color="#2B6128" />
                   <Text className="ml-4 text-gray-700">Social Media</Text>
@@ -137,7 +156,7 @@ const SettingsScreen = () => {
                 />
               </TouchableOpacity>
 
-              <TouchableOpacity className="flex-row items-center py-3 justify-between">
+              <TouchableOpacity onPress={()=>setPhoneDetails(!phoneDetails)} className="flex-row items-center py-3 justify-between">
                 <View className="flex-row items-center">
                   <SimpleLineIcons
                     name="screen-smartphone"
@@ -187,7 +206,7 @@ const SettingsScreen = () => {
               <Text className="text-gray-700 font-bold mb-2 pb-2 border-b  border-secondary">
                 Other
               </Text>
-              <TouchableOpacity className="flex-row items-center py-3 ">
+              <TouchableOpacity onPress={()=>setAskUs(!askUs)} className="flex-row items-center py-3 ">
                 <MaterialCommunityIcons
                   name="map-marker-question"
                   size={24}
