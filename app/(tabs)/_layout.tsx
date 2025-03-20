@@ -17,13 +17,14 @@ import ProfileUnactive from "@/assets/images/payment/profile_unactive.svg";
 import QRcode from "@/assets/images/qr-code.svg"
 import { Ionicons } from "@expo/vector-icons";
 import { useSelector } from "react-redux";
+import QRScanner from "./(home)/(QrScan)";
 export default function TabLayout() {
   const colorScheme = useColorScheme();
   const tabBarHeight = Dimensions.get("screen").height * 0.08;
   const user=useSelector((state: any) => state?.login?.user);
   const cartState = useSelector((state: any) => state?.cart?.products);
   const userTabs=[
-    { name: "home", icon: HomeIconTab, inactiveIcon: HomeInactive },
+    { name: "(home)", icon: HomeIconTab, inactiveIcon: HomeInactive },
     { name: "meal", icon: Meal, inactiveIcon: MealUnactive },
     { name: "(cart)", icon: Checkout, inactiveIcon: CheckOutUnactive },
     { name: "(Bus)", icon: Bus, inactiveIcon: BusUnactiive },
@@ -31,14 +32,14 @@ export default function TabLayout() {
   ]
   const staffTabs=[
     { name: "(home)", icon: HomeIconTab, inactiveIcon: HomeInactive },
-    { name: "(QrScan)", icon: QRcode, inactiveIcon: QRcode },
+    // { name: "QrScan", icon: QRcode, inactiveIcon: QRcode, component: QRScanner },
     { name: "meal", icon: Meal, inactiveIcon: MealUnactive },
     { name: "(cart)", icon: Checkout, inactiveIcon: CheckOutUnactive },
     { name: "(Bus)", icon: Bus, inactiveIcon: BusUnactiive },
     { name: "(Accounts)", icon: ProfileIcon, inactiveIcon: ProfileUnactive }
   ]
   const tabsToRender=user?.user_data?.is_staff?staffTabs:userTabs
-  console.log(user)
+  console.log("Tab user",user)
   return (
     <Tabs
       screenOptions={{
@@ -76,10 +77,11 @@ export default function TabLayout() {
         <Tabs.Screen
           key={index}
           name={item.name}
+          
           options={{
             
             tabBarIcon: ({ focused }) => (
-              item.name =='(QrScan)'?<View
+              item.name =='QrScan'?<View
               className="rounded-full flex flex-col items-center justify-center relative"
               style={{
                 alignItems: "center",

@@ -30,7 +30,7 @@ export default function MobileMoney() {
 //     }
 // };
 const handleOrder = () => {
-  dispatch(createOrder({"cartItems":cartItems,"phone_number":phone_number}))
+  dispatch(createOrder({"cartItems":cartItems,"phone_number":phone_number,"amount":amount}))
     .then((result:any) => {
       if (createOrder.fulfilled.match(result)) {
         console.log(result?.payload);

@@ -48,7 +48,7 @@ const SignupScreen = () => {
             : result?.payload?.error; // Single error message
         }
 
-        Alert.alert("Register Failed", errorMessage);
+        return Alert.alert("Register Failed", errorMessage);
       }
       router.push("")
     } catch (error) {

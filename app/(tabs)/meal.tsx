@@ -5,12 +5,12 @@ import {
   FlatList,
   Image,
   TouchableOpacity,
-  ScrollView,Alert,
+  ScrollView,
+  Alert,
   ActivityIndicator,
-  BackHandler,
-  
+  BackHandler
 } from "react-native";
-import { useState } from "react";
+import react, { useState } from "react";
 import {
   Feather,
   FontAwesome,
@@ -24,41 +24,63 @@ import { AppDispatch } from "../store";
 import { useEffect } from "react";
 import { GetfoodCategories } from "../store/slice/ProductSlice";
 import { addToCart } from "../store/slice/cartSlice";
-
+import { setSearchResults } from "../store/slice/searchSlice";
 
 export default function MealPlanScreen() {
   const [expandedCategories, setExpandedCategories] = useState(["Salad"]);
+  const [searchQuery, setsearchQuery] = useState("");
   const insets = useSafeAreaInsets();
-  const MealCategories=useSelector((state:any) => state?.products?.foodsCategories);
-  const cartState=useSelector((state:any) => state?.cart?.products);
-  const loading=useSelector((state:any) => state?.products?.loading);
+  const MealCategories = useSelector(
+    (state: any) => state?.products?.foodsCategories
+  );
+  const cartState = useSelector((state: any) => state?.cart?.products);
+  const loading = useSelector((state: any) => state?.products?.loading);
   const dispatch = useDispatch<AppDispatch>();
+  const products = useSelector((state: any) => state?.products?.products);
+  const [loadingData, setLoading] = useState(loading);
   // console.log("meal categories",MealCategories)
-  useEffect(()=>{
+  useEffect(() => {
     fetchFoodCategoriesFunction();
-  },[])
-
+  }, []);
+  const handleSearch = () => {
+    if (searchQuery.trim() !== "") {
+      setLoading(true);
+      console.log("Meal Categories",MealCategories)
+      const filteredProducts = MealCategories.flatMap((category: any) =>
+        category.foods.filter((food: any) =>
+          food.name.toLowerCase().includes(searchQuery.toLowerCase())
+        )
+      );
+      dispatch(setSearchResults(filteredProducts));
+      setLoading(false);
+      router.push({
+        pathname: "/search",
+        params: { query: searchQuery }
+      });
+    }
+  };
   useEffect(() => {
     const onBackPress = () => {
       Alert.alert("Hold on!", "Are you sure you want to go back?", [
         { text: "Cancel", style: "cancel", onPress: () => null },
-        { text: "YES", onPress: () => router.back() },
+        { text: "YES", onPress: () => router.back() }
       ]);
       return true; // Prevent default back action
     };
 
     BackHandler.addEventListener("hardwareBackPress", onBackPress);
 
-    return () => BackHandler.removeEventListener("hardwareBackPress", onBackPress);
+    return () =>
+      BackHandler.removeEventListener("hardwareBackPress", onBackPress);
   }, []);
-  const fetchFoodCategoriesFunction=async()=>{
-    const result=await dispatch(GetfoodCategories());
-    console.log(result);
-    if(GetfoodCategories.rejected.match(result)) {
+  const fetchFoodCategoriesFunction = async () => {
+    const result = await dispatch(GetfoodCategories());
+    // console.log(result);
+    if (GetfoodCategories.rejected.match(result)) {
       Alert.alert("Failed to fetch food categories");
       return;
     }
-  }
+  };
   const toggleCategory = (category: string) => {
     setExpandedCategories((prev) =>
       prev.includes(category)
@@ -72,7 +94,7 @@ export default function MealPlanScreen() {
       className="flex-1 bg-white px-4 pb-2"
       style={{ paddingTop: insets.top }}
     >
-      {loading && <ActivityIndicator size='large' collapsable  />}
+      {loading && <ActivityIndicator size="large" collapsable />}
       <View className="flex-row items-center justify-between pt-4 ">
         <TouchableOpacity className="bg-gray-300 p-2 rounded-full">
           <FontAwesome6 name="sliders" size={24} color="#2B6128" />
@@ -82,16 +104,21 @@ export default function MealPlanScreen() {
         </TouchableOpacity>
       </View>
       <View className="px-5 mt-3 flex-row items-center bg-white rounded-full py-2 mx-4  mb-3 border-b-4 border-l border-r border-secondary">
-        <Octicons name="search" size={24} color="black" />
+        <TouchableOpacity onPress={() => handleSearch()}>
+          <Octicons name="search" size={24} color="black" />
+        </TouchableOpacity>
         <TextInput
           placeholder="Search Products"
           className="text-secondary flex-1 px-3"
+          value={searchQuery}
+          onChangeText={(e) => setsearchQuery(e)}
+          onEndEditing={() => handleSearch()}
         />
         <FontAwesome6 name="sliders" size={24} color="#2B6128" />
       </View>
 
       <ScrollView showsVerticalScrollIndicator={false}>
-        {MealCategories?.map(( category:any, index:number) => (
+        {MealCategories?.map((category: any, index: number) => (
           <View key={index} className="mb-2">
             <TouchableOpacity onPress={() => toggleCategory(category?.name)}>
               <View className="flex-row justify-between items-center border-b pb-2">
@@ -112,18 +139,24 @@ export default function MealPlanScreen() {
             {expandedCategories.includes(category?.name) && (
               <FlatList
                 horizontal
-                data={category.foods}
-                keyExtractor={(item) => item.id}
+                showsHorizontalScrollIndicator={false}
+                data={category?.foods}
+                keyExtractor={(item) => item?.id}
                 renderItem={({ item }) => (
-                  <View className="m-2 items-center">
+                  <View className="m-2 w-24 items-center">
                     <Image
-                      source={{uri:item?.thumbnail}}
+                      source={{ uri: item?.thumbnail }}
                       className="w-24 h-24 rounded-2xl"
                     />
                     <Text className="text-sm text-center mt-1">
                       {item?.name}
                     </Text>
-                    <TouchableOpacity onPress={()=>dispatch(addToCart({product:item,quantity:1}))} className="bg-secondary px-4 py-1 rounded-full mt-1">
+                    <TouchableOpacity
+                      onPress={() =>
+                        dispatch(addToCart({ product: item, quantity: 1 }))
+                      }
+                      className="bg-secondary px-4 py-1 rounded-full mt-1"
+                    >
                       <Text className="text-white">Add</Text>
                     </TouchableOpacity>
                   </View>
@@ -135,7 +168,7 @@ export default function MealPlanScreen() {
       </ScrollView>
       <TouchableOpacity
         className="bg-secondary px-3 py-3 rounded-full"
-        onPress={() => router.push("(cart)")}
+        onPress={() => router.push("/(cart)")}
       >
         <Text className="text-white text-2xl text-center font-bold">
           Check Out

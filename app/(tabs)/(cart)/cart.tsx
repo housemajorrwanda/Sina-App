@@ -118,8 +118,8 @@ const CombinedScreen = () => {
                 Delivery Subtotal
               </Text>
               <Text className="text-lg font-semibold text-gray-700">
-                {" "}
-                7500 Rwf
+                
+                None
               </Text>
             </View>
             <View className="flex-row items-center justify-between pr-4 ">
@@ -127,8 +127,7 @@ const CombinedScreen = () => {
                 Discount Rate
               </Text>
               <Text className="text-lg font-semibold text-gray-700">
-                {" "}
-                7500 Rwf
+                None
               </Text>
             </View>
             <View className="flex-row items-center justify-between pr-4">

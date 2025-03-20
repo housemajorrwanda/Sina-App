@@ -6,7 +6,12 @@ import {
   Image,
   ScrollView,
   TouchableOpacity,
-  FlatList
+  FlatList,
+  ActivityIndicator,
+  SafeAreaView,
+  KeyboardAvoidingView,
+  Platform,
+  Dimensions
 } from "react-native";
 import {
   FontAwesome,
@@ -16,12 +21,15 @@ import {
   FontAwesome6,
   AntDesign,
   Foundation,
+  Ionicons,
   MaterialCommunityIcons
 } from "@expo/vector-icons";
 import LocationScreen from "../../components/LocatingUser";
-import * as LocalAuthentication from 'expo-local-authentication';
+import * as LocalAuthentication from "expo-local-authentication";
 import { useSelector, useDispatch } from "react-redux";
 import { AppDispatch } from "../../store";
+import { setSearchResults } from "@/app/store/slice/searchSlice";
+import QRcode from "@/assets/images/qr-code.svg";
 // @ts-ignore
 
 // import Student from "../../assets/images/student.webp";
@@ -33,19 +41,23 @@ import {
   GetShopCategories,
   GetCategoryProducts
 } from "../../store/slice/ProductSlice";
-import { addToCart,removeFromCart } from "../../store/slice/cartSlice";
+import { addToCart, removeFromCart } from "../../store/slice/cartSlice";
 import GlobalText from "@/app/GlobalText";
 
 const HomeScreen = () => {
   const dispatch = useDispatch<AppDispatch>();
-  const user=useSelector((state: any) => state?.login?.user);
-  const router=useRouter()
+  // const cartState=useSelector((state: any) => state?.)
+  const products = useSelector((state: any) => state?.products?.products);
+  const loading = useSelector((state: any) => state?.products?.loading);
+  const user = useSelector((state: any) => state?.login?.user);
+  const router = useRouter();
+  const [search, setSearch] = useState("");
+  const [searchQuery, setsearchQuery] = useState("");
+  const [Loading, setLoading] = useState(loading);
   // console.log("logged in user",user)
   const productCategories = useSelector(
     (state: any) => state?.products?.categories
   );
-  // const cartState=useSelector((state: any) => state?.)
-  const products = useSelector((state: any) => state?.products?.products);
 
   const ShopCategories = useSelector(
     (state: any) => state?.products?.shopCategories
@@ -81,23 +93,21 @@ const HomeScreen = () => {
       console.error("Failed to fetch products: ", result);
     }
   };
-  const getCategoryProducts = async (category_id:string) => {
+  const getCategoryProducts = async (category_id: string) => {
     setSelectedCategory(category_id);
-    const result = await dispatch(
-      GetCategoryProducts({ id: category_id })
-    );
+    const result = await dispatch(GetCategoryProducts({ id: category_id }));
     // console.log("product selected",result?.payload)
     if (GetProducts.rejected.match(result)) {
       console.error("Failed to fetch products: ", result);
     }
   };
-  
-  const cartState=useSelector((state:any)=>state.cart?.products)
-  const cartCheck=(id:any)=>{
-    const existingProduct = cartState.find((p:any) => p.id === id);
-    return existingProduct? true : false;
-  }
-  console.log("Cart ",cartState)
+
+  const cartState = useSelector((state: any) => state.cart?.products);
+  const cartCheck = (id: any) => {
+    const existingProduct = cartState.find((p: any) => p.id === id);
+    return existingProduct ? true : false;
+  };
+  console.log("Cart ", cartState);
   const time = new Date().getHours();
   let greetings;
   if (time < 12) {
@@ -115,17 +125,50 @@ const HomeScreen = () => {
     setIsSeeAll(true);
   };
 
-  const handleCategoryPressed=(category:any)=>{
+  const handleCategoryPressed = (category: any) => {
     console.log(category);
-    router.push(`/(home)/${category.id}`)
-    
-  }
+    router.push(`/(home)/${category.id}`);
+  };
+  const [filteredProducts, setFilteredProducts] = useState(products);
+
+  const handleSearch = () => {
+    if (search.trim() === "") {
+      setFilteredProducts(products);
+    } else {
+      const filtered = products.filter((product: any) =>
+        product.name.toLowerCase().includes(search.toLowerCase())
+      );
+      setFilteredProducts(filtered);
+    }
+  };
+  const handleSearchs = () => {
+    if (searchQuery.trim() !== "") {
+      setLoading(true);
+      const filteredProducts = products?.filter((product: any) =>
+        product.name.toLowerCase().includes(searchQuery?.toLowerCase())
+      );
+      dispatch(setSearchResults(filteredProducts));
+      setLoading(false);
+      router.push({
+        pathname: "/search",
+        params: { query: searchQuery }
+      });
+    }
+  };
+  useEffect(() => {
+    setFilteredProducts(products);
+  }, [products]);
+  // console.log(user)
   return (
     <View className="flex-1 bg-white" style={{ paddingTop: insets.top }}>
+      {loading && <ActivityIndicator size="large" color="#F1A10C" collapsable />}
       {isSeeAll ? (
-        <ScrollView className="flex-1">
+        <ScrollView className="flex-1 pb-10" stickyHeaderIndices={[4]}>
           <View className="flex-row items-center justify-between mx-4">
-            <TouchableOpacity onPress={()=>setIsSeeAll(false)} className="bg-gray-300 p-2 rounded-full">
+            <TouchableOpacity
+              onPress={() => setIsSeeAll(false)}
+              className="bg-gray-300 p-2 rounded-full"
+            >
               {/* <FontAwesome6 name="sliders" size={24} color="#2B6128" /> */}
               <AntDesign name="arrowleft" size={24} color="black" />
             </TouchableOpacity>
@@ -168,11 +211,16 @@ const HomeScreen = () => {
 
           {/* Search Bar */}
           <View className="px-5 mt-3 flex-row items-center bg-white rounded-full py-2 mx-4 border-b-4 border-l border-r border-secondary">
-            <Octicons name="search" size={24} color="black" />
+            <TouchableOpacity onPress={() => handleSearch()}>
+              <Octicons name="search" size={24} color="black" />
+            </TouchableOpacity>
             <TextInput
               placeholder="Search Products"
               placeholderTextColor="#2B6128"
               className="text-secondary flex-1 px-3"
+              value={search}
+              onChangeText={(text) => setSearch(text)}
+              onEndEditing={() => handleSearch()}
             />
             <FontAwesome6 name="sliders" size={24} color="#2B6128" />
           </View>
@@ -186,13 +234,13 @@ const HomeScreen = () => {
           <ScrollView
             horizontal
             showsHorizontalScrollIndicator={false}
-            className="mt-4 px-4"
+            className=" px-4 py-2  w-[98%] bg-white mx-auto"
           >
             {productCategories.map((category: any) => (
               <TouchableOpacity
                 key={category.id}
                 onPress={() => {
-                   getCategoryProducts(category.id);
+                  getCategoryProducts(category.id);
                 }}
                 className={`px-4 py-2 mx-2 rounded-full border-b-4 border-l border-r border-secondary ${
                   selectedCategory === category?.id
@@ -212,191 +260,280 @@ const HomeScreen = () => {
               </TouchableOpacity>
             ))}
           </ScrollView>
-          <View className="mt-5  flex-1 flex flex-col w-[95%] mx-auto">
-            <ScrollView
-              horizontal
-              showsHorizontalScrollIndicator={false}
-              className="mt-3"
-            >
-              <FlatList
-                // @ts-ignore
-
-                data={products}
-                keyExtractor={(item) => item.id.toString()}
-                numColumns={3} // Ensure 3 items per row
-                showsVerticalScrollIndicator={false}
-                renderItem={(product:any)=>{
-                  console.log(product?.item?.thumbnail)
-                  return(
-                    <View key={product.id} className=" p-2">
-                    <View className="relative bg-third p-3 rounded-3xl">
-                      <Image
-                        source={{uri:product?.item?.thumbnail}}
-                        className="w-16 h-16 mx-auto rounded-full"
-                      />
-                      <Text className="text-secondary font-bold text-center mt-2">
-                        {product?.item?.name}
-                      </Text>
-                      <View className="flex-row items-center justify-between">
-                        <GlobalText className="text-secondary text-sm font-semibold">
-                          {product?.item?.price}
-                        </GlobalText>
-                        <Text className="text-secondary text-xs">
-                          {product?.item?.is_pick_and_go?"Pick&GO":product?.item?.delivery}
+          <View className="mt-5 flex-1 flex w-[98%] mx-auto">
+            <ScrollView>
+              <View
+                className="flex flex-row flex-wrap"
+                style={{ paddingBottom: insets.bottom }}
+              >
+                {(search.trim() ? filteredProducts : products)?.map(
+                  (item: any, index: number) => (
+                    <View key={item.id} className="p-1 w-[33.33%]">
+                      {/* Ensure three columns */}
+                      <View className="relative bg-third p-3 rounded-3xl">
+                        <Image
+                          source={{ uri: item?.thumbnail }}
+                          className="w-16 h-16 mx-auto rounded-full"
+                          resizeMode="cover"
+                        />
+                        <Text className="text-secondary font-bold text-center mt-2">
+                          {item?.name}
                         </Text>
+                        <View className="flex-row items-center justify-between">
+                          <Text className="text-secondary text-xs font-semibold">
+                            {item?.price?.split(".")[0]} Rwf
+                          </Text>
+                          <Text className="text-secondary text-xs">
+                            {item?.is_pick_and_go ? "Pick&GO" : item?.delivery}
+                          </Text>
+                        </View>
+                        {cartCheck(item.id) ? (
+                          <TouchableOpacity
+                            onPress={() => {
+                              dispatch(
+                                removeFromCart({ product: item, quantity: 1 })
+                              );
+                            }}
+                            className="absolute top-2 right-2 bg-secondary w-6 h-6 rounded-full flex items-center justify-center"
+                          >
+                            <AntDesign name="minus" size={20} color="white" />
+                          </TouchableOpacity>
+                        ) : (
+                          <TouchableOpacity
+                            onPress={() => {
+                              dispatch(
+                                addToCart({ product: item, quantity: 1 })
+                              );
+                            }}
+                            className="absolute top-2 right-2 bg-secondary w-6 h-6 rounded-full flex items-center justify-center"
+                          >
+                            <Foundation name="plus" size={20} color="white" />
+                          </TouchableOpacity>
+                        )}
                       </View>
-                      <TouchableOpacity onPress={()=>{dispatch(addToCart({product,quantity:1}))}} className="absolute top-2 right-2 bg-secondary w-6 h-6 rounded-full flex items-center justify-center">
-                        <Foundation name="plus" size={20} color="white" />
-                      </TouchableOpacity>
                     </View>
-                  </View>
                   )
-                }}
-              />
+                )}
+              </View>
             </ScrollView>
           </View>
         </ScrollView>
       ) : (
-        <ScrollView className="flex-1">
-          {/* Header Section */}
-          <View className="relative w-full h-48 bg-black">
-            <Image
-              source={require("../../../assets/images/back.jpeg")}
-              className="absolute w-full h-full opacity-50"
-            />
-            <View className="absolute top-10 left-5 flex-row items-center">
-              <Image source={{uri:user?.user_data?.profile}} className="w-24 h-24 rounded-full border border-secondary" />
-              <View className="ml-3">
-                <GlobalText className="text-white text-lg font-bold">
-                  {greetings}, {user?.user_data?.full_name ||user?.user_data?.phone_number || 'Anonymous'}
-                </GlobalText>
-                {/* <Text className="text-white text-sm">Kigali - Musanze</Text> */}
-                <LocationScreen />
-              </View>
-            </View>
-          </View>
-
-          {/* Search Bar */}
-          <View className="px-5 mt-3 flex-row items-center bg-white rounded-full py-2 mx-4 border-b-4 border-l border-r border-secondary">
-            <Octicons name="search" size={24} color="black" />
-            <TextInput
-              placeholder="Search Products"
-              placeholderTextColor="#2B6128"
-              className="text-secondary flex-1 px-3"
-            />
-            <FontAwesome6 name="sliders" size={24} color="#2B6128" />
-          </View>
-
-          {/* Special Order Button */}
-          <View className="flex-row items-center justify-between mx-6">
-            <TouchableOpacity
-              className="bg-secondary p-2 rounded-full mx-2 mt-3 flex items-center"
-              onPress={() => router.push("meal")}
-            >
-              <Text className="text-white font-semiBold">Special Order</Text>
-            </TouchableOpacity>
-            <TouchableOpacity className="relative flex flex-col " onPress={() => router.push("(cart)")}>
-              <View className="absolute -top-3 -right-3 bg-third w-5 h-5 flex flex-col items-center justify-center rounded-full z-10">
-              <Text className="text-xs ">{cartState?.length}</Text>
-              </View>
-              <FontAwesome5 name="shopping-cart" size={24} color="#2B6128" />
-            </TouchableOpacity>
-          </View>
-
-          {/* Categories */}
-          <View className="mt-6 px-2">
-            <View className="flex-row items-center justify-between mx-6">
-              <Text className="text-secondary text-lg font-bold">
-                Categories
-              </Text>
-
-              <TouchableOpacity onPress={handleSeeAll}>
-                <Text className="text-lg text-secondary font-bold">
-                  See all
-                </Text>
-              </TouchableOpacity>
-            </View>
+        <SafeAreaView className="flex-1 bg-white">
+          <KeyboardAvoidingView
+            behavior={Platform.OS === "ios" ? "padding" : "height"}
+            className="flex-1"
+          >
             <ScrollView
-              horizontal
-              showsHorizontalScrollIndicator={false}
-              className="mt-3 flex-row"
+              className="flex-1"
+              contentContainerStyle={{ paddingBottom: insets.bottom + 10 }}
             >
-              {ShopCategories.map(
-                (
-                  category: { title: string; thumbnail: any,id:any },
-                  index: number
-                ) => (
-                  <View key={index} className="items-center">
-                    <TouchableOpacity onPress={()=>handleCategoryPressed(category)} className="w-40 h-40 bg-gray-200 rounded-3xl shadow-md mx-2 overflow-hidden relative">
-                      <Image
-                        source={{ uri: category.thumbnail }}
-                        className="absolute top-0 left-0 w-full h-full"
-                      />
-                    </TouchableOpacity>
-                    <Text className="text-secondary text-center mt-2 text-sm font-semibold">
-                      {category.title}
+              {/* Header Section */}
+              <View className="relative w-full h-48 bg-black">
+                <Image
+                  source={require("../../../assets/images/back.jpeg")}
+                  className="absolute w-full h-full opacity-50"
+                />
+                <View className="absolute top-10 left-5 flex-row items-center">
+                  <Image
+                    source={{ uri: user?.user_data?.profile }}
+                    className="w-24 h-24 rounded-full border border-secondary"
+                  />
+                  <View className="ml-3">
+                    <Text className="text-white text-lg font-bold">
+                      {greetings},{" "}
+                      {user?.user_data?.full_name ||
+                        user?.user_data?.phone_number ||
+                        "Anonymous"}
                     </Text>
+                    {/* <Text className="text-white text-sm">Kigali - Musanze</Text> */}
+                    <LocationScreen />
                   </View>
-                )
-              )}
-            </ScrollView>
-          </View>
-
-          {/* Products Sections */}
-          {productCategories.map((category: any, index: number) => (
-            <View key={index} className="mt-5 px-2">
-              <View className="flex-row items-center justify-between px-4">
-                <View className="h-0.5 w-64 bg-secondary my-4" />
-                <Text className="text-secondary text-lg font-bold">
-                  {category?.name}
-                </Text>
+                </View>
               </View>
-              <ScrollView
-                horizontal
-                showsHorizontalScrollIndicator={false}
-                className="mt-3"
-              >
-                {category?.products?.map((product: any, index: number) => (
-                  <View
-                    key={index}
-                    className="relative w-36 h-34 bg-third p-3 rounded-3xl mx-2"
+
+              {/* Search Bar */}
+              <View className="px-5 mt-3 flex-row items-center bg-white rounded-full py-2 mx-4 border-b-4 border-l border-r border-secondary">
+                <TouchableOpacity onPress={() => handleSearchs()}>
+                  <Octicons name="search" size={24} color="black" />
+                </TouchableOpacity>
+                <TextInput
+                  placeholder="Search Products"
+                  placeholderTextColor="#2B6128"
+                  className="text-secondary flex-1 px-3"
+                  value={searchQuery}
+                  onChangeText={(text) => setsearchQuery(text)}
+                  onEndEditing={() => handleSearchs()}
+                />
+                <FontAwesome6 name="sliders" size={24} color="#2B6128" />
+              </View>
+              {Loading && <ActivityIndicator size="large" color="#F1A10C" />}
+              {/* Special Order Button */}
+              <View className="flex-row items-center justify-between mx-6">
+                <TouchableOpacity
+                  className="bg-secondary p-2 rounded-full mx-2 mt-3 flex items-center"
+                  onPress={() => router.push("/(tabs)/meal")}
+                >
+                  <Text className="text-white font-semiBold">
+                    Special Order
+                  </Text>
+                </TouchableOpacity>
+                {user?.user_data?.is_staff && (
+                  <TouchableOpacity
+                    onPress={() => router.push("/(QrScan)")}
+                    className=""
                   >
-                    {/* Product Image */}
-                    <Image
-                      source={{ uri: product.thumbnail }}
-                      className="w-16 h-16 mx-auto rounded-full"
+                    <Ionicons
+                      name="scan"
+                      size={Dimensions.get("window").width * 0.1}
+                      color={"#2B6128"}
                     />
+                  </TouchableOpacity>
+                )}
 
-                    {/* Product Name */}
-                    <Text className="text-secondary font-bold text-center mt-2">
-                      {product.name}
+                <TouchableOpacity
+                  className="relative flex flex-col "
+                  onPress={() => router.push("/(cart)")}
+                >
+                  <View className="absolute -top-3 -right-3 bg-third w-5 h-5 flex flex-col items-center justify-center rounded-full z-10">
+                    <Text className="text-xs ">{cartState?.length}</Text>
+                  </View>
+                  <FontAwesome5
+                    name="shopping-cart"
+                    size={24}
+                    color="#2B6128"
+                  />
+                </TouchableOpacity>
+              </View>
+
+              {/* Categories */}
+              <View className="mt-6 px-2">
+                <View className="flex-row items-center justify-between mx-6">
+                  <Text className="text-secondary text-lg font-bold">
+                    Categories
+                  </Text>
+
+                  <TouchableOpacity onPress={handleSeeAll}>
+                    <Text className="text-lg text-secondary font-bold">
+                      See all
                     </Text>
+                  </TouchableOpacity>
+                </View>
+                <ScrollView
+                  horizontal
+                  showsHorizontalScrollIndicator={false}
+                  className="mt-3 flex-row"
+                >
+                  {ShopCategories?.map(
+                    (
+                      category: { title: string; thumbnail: any; id: any },
+                      index: number
+                    ) => (
+                      <View key={index} className="items-center">
+                        <TouchableOpacity
+                          onPress={() => handleCategoryPressed(category)}
+                          className="w-40 h-40 bg-gray-200 rounded-3xl shadow-md mx-2 overflow-hidden relative"
+                        >
+                          <Image
+                            source={{ uri: category.thumbnail }}
+                            className="absolute top-0 left-0 w-full h-full"
+                          />
+                        </TouchableOpacity>
+                        <Text className="text-secondary text-center mt-2 text-sm font-semibold">
+                          {category?.title}
+                        </Text>
+                      </View>
+                    )
+                  )}
+                </ScrollView>
+              </View>
 
-                    {/* Price */}
-                    <View className="flex-row items-center justify-between ">
-                      <Text className="text-secondary text-sm text-center font-semibold">
-                        {product.price}
-                      </Text>
-
-                      {/* Delivery Time */}
-                      <Text className="text-secondary text-xs text-center">
-                        {product.delivery || "15min"}
+              {/* Products Sections */}
+              {!productCategories ? (
+                <ActivityIndicator size="large" color="#F1A10C" />
+              ) : (
+                productCategories?.map((category: any, index: number) => (
+                  <View key={index} className="mt-5 px-2">
+                    <View className="flex-row items-center justify-between px-4">
+                      <View className="h-0.5 w-64 bg-secondary my-4" />
+                      <Text className="text-secondary text-lg font-bold">
+                        {category?.name}
                       </Text>
                     </View>
+                    <ScrollView
+                      horizontal
+                      showsHorizontalScrollIndicator={false}
+                      className="mt-3"
+                    >
+                      {category?.products?.map(
+                        (product: any, index: number) => (
+                          <View
+                            key={index}
+                            className="relative w-36 h-34 bg-third p-3 rounded-3xl mx-2"
+                          >
+                            {/* Product Image */}
+                            <Image
+                              source={{ uri: product.thumbnail }}
+                              className="w-16 h-16 mx-auto rounded-full"
+                            />
 
-                    {/* Floating Add Button */}
-                    {cartCheck(product.id)?<TouchableOpacity onPress={()=>{dispatch(removeFromCart({product,quantity:1}))}} className="absolute top-2 right-2 bg-secondary w-6 h-6 rounded-full flex items-center justify-center">
-                    <AntDesign name="minus" size={20} color="white" />
-                    </TouchableOpacity>:<TouchableOpacity onPress={()=>{dispatch(addToCart({product,quantity:1}))}} className="absolute top-2 right-2 bg-secondary w-6 h-6 rounded-full flex items-center justify-center">
-                      <Foundation name="plus" size={20} color="white" />
-                    </TouchableOpacity>}
-                    
+                            {/* Global Name */}
+                            <Text className="text-secondary font-bold text-center mt-2">
+                              {product.name}
+                            </Text>
+
+                            {/* Price */}
+                            <View className="flex-row items-center justify-between ">
+                              <Text className="text-secondary text-sm text-center font-semibold">
+                                {product.price}
+                              </Text>
+
+                              {/* Delivery Time */}
+                              <Text className="text-secondary text-xs text-center">
+                                {product.delivery || "15min"}
+                              </Text>
+                            </View>
+
+                            {/* Floating Add Button */}
+                            {cartCheck(product.id) ? (
+                              <TouchableOpacity
+                                onPress={() => {
+                                  dispatch(
+                                    removeFromCart({ product, quantity: 1 })
+                                  );
+                                }}
+                                className="absolute top-2 right-2 bg-secondary w-6 h-6 rounded-full flex items-center justify-center"
+                              >
+                                <AntDesign
+                                  name="minus"
+                                  size={20}
+                                  color="white"
+                                />
+                              </TouchableOpacity>
+                            ) : (
+                              <TouchableOpacity
+                                onPress={() => {
+                                  dispatch(addToCart({ product, quantity: 1 }));
+                                }}
+                                className="absolute top-2 right-2 bg-secondary w-6 h-6 rounded-full flex items-center justify-center"
+                              >
+                                <Foundation
+                                  name="plus"
+                                  size={20}
+                                  color="white"
+                                />
+                              </TouchableOpacity>
+                            )}
+                          </View>
+                        )
+                      )}
+                    </ScrollView>
                   </View>
-                ))}
-              </ScrollView>
-            </View>
-          ))}
-        </ScrollView>
+                ))
+              )}
+            </ScrollView>
+          </KeyboardAvoidingView>
+        </SafeAreaView>
       )}
     </View>
   );

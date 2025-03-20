@@ -222,8 +222,8 @@ const index = () => {
       >
         <View className="flex-1">
           <ImageBackground
-            className="flex flex-col h-[25vh] relative "
-            style={{ paddingTop: insets.top }}
+            className="flex flex-col h-[27vh] relative "
+            style={{ paddingTop: insets.top + 3 }}
             source={require("@/assets/images/payment/Blackbg.png")}
           >
             <View className="flex flex-row items-start justify-between w-[90%] mx-auto">
@@ -245,7 +245,7 @@ const index = () => {
             </Text>
           </ImageBackground>
           {/* Map Vieww */}
-          <View className="w-[100%] h-[50vh]">
+          <View className="w-[100%] h-[40vh]">
             <MapView
               region={region || undefined}
               // region={regionTest || undefined}
@@ -370,8 +370,8 @@ const index = () => {
                     </View>
                   </View>
                 ) : (
-                  <TouchableOpacity onPress={() => setClosed(true)}>
-                    <Text>Please Choose to Track it's Progress</Text>
+                  <TouchableOpacity className="bg-third/20 py-3 rounded-full  px-3 " onPress={() => setClosed(true)}>
+                    <Text className="font-bold">Please Choose to Track it's Progress</Text>
                   </TouchableOpacity>
                 )}
               </View>

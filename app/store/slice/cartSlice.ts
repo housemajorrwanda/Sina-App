@@ -132,7 +132,7 @@ export const Payment = createAsyncThunk<any, PaymentInterface, any>(
   // Creating Orders Slice
   export const createOrder = createAsyncThunk(
     "order/createOrder",
-    async (kwargs:{cartItems:[],phone_number:string}, { getState, rejectWithValue }:any) => {
+    async (kwargs:{cartItems:[],phone_number:string,amount:number}, { getState, rejectWithValue }:any) => {
       try {
         if (!Array.isArray(kwargs?.cartItems)) {
           return rejectWithValue("Invalid cart data");
@@ -152,7 +152,7 @@ export const Payment = createAsyncThunk<any, PaymentInterface, any>(
           .flatMap((item:any) => item.accompaniments || []) // Avoid undefined errors
           .map((acc:any) => acc.id);
   
-        const orderPayload = { product_ids, food_ids, accompaniment_ids,phone_number:kwargs?.phone_number };
+        const orderPayload = { product_ids, food_ids, accompaniment_ids,phone_number:kwargs?.phone_number,amount:kwargs?.amount };
         console.log("orderPayload",orderPayload)
         const response = await axios.post(
           `${url}/products/orders/`,
