@@ -2,7 +2,8 @@ import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native
 import { useFonts } from 'expo-font';
 import { Stack } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
-import { StatusBar, Text } from 'react-native';
+import { Text } from 'react-native';
+import { StatusBar } from 'expo-status-bar';
 import { useEffect } from 'react';
 import 'react-native-reanimated';
 import "@/global.css";
@@ -39,13 +40,7 @@ export default function RootLayout() {
   return (
     <Provider store={store}>
       {/* ✅ Place StatusBar at the top for global styling */}
-      <StatusBar
-        barStyle="light-content"  // "dark-content" or "light-content"
-        backgroundColor="#F1A10C" // Custom background color
-        animated={true}           // Smooth animation
-        hidden={false}            // Show/hide StatusBar
-        translucent={true}        // Allow content behind StatusBar
-      />
+      <StatusBar style='light' />
 
       <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
         <Stack>

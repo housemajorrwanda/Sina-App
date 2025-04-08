@@ -169,7 +169,7 @@ const PersonalInformation = ({ visible, setClosed }: any) => {
                     >
                       <Text>
                         {user?.user_data?.full_name ||
-                          birthDate.toDateString() ||
+                          birthDate?.toDateString() ||
                           "Choose Date"}
                       </Text>
                     </TouchableOpacity>

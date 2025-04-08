@@ -143,12 +143,12 @@ export default function MealPlanScreen() {
                 data={category?.foods}
                 keyExtractor={(item) => item?.id}
                 renderItem={({ item }) => (
-                  <View className="m-2 w-24 items-center">
+                  <TouchableOpacity onPress={()=>router.push(`/(tabs)/(home)/(products)/${item?.id}`)} className="m-2 w-24 items-center">
                     <Image
                       source={{ uri: item?.thumbnail }}
                       className="w-24 h-24 rounded-2xl"
                     />
-                    <Text className="text-sm text-center mt-1">
+                    <Text numberOfLines={1} ellipsizeMode="tail" className="text-sm text-center mt-1">
                       {item?.name}
                     </Text>
                     <TouchableOpacity
@@ -157,9 +157,9 @@ export default function MealPlanScreen() {
                       }
                       className="bg-secondary px-4 py-1 rounded-full mt-1"
                     >
-                      <Text className="text-white">Add</Text>
+                      <Text className="text-white font-bold">Add</Text>
                     </TouchableOpacity>
-                  </View>
+                  </TouchableOpacity>
                 )}
               />
             )}
@@ -168,7 +168,7 @@ export default function MealPlanScreen() {
       </ScrollView>
       <TouchableOpacity
         className="bg-secondary px-3 py-3 rounded-full"
-        onPress={() => router.push("/(cart)")}
+        onPress={() => router.push("/(tabs)/(cart)/cart")}
       >
         <Text className="text-white text-2xl text-center font-bold">
           Check Out

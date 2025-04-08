@@ -2,13 +2,15 @@ import { configureStore } from "@reduxjs/toolkit";
 import cartReducer from "./slice/cartSlice";
 import LoginReducer from "./slice/LoginSlice";
 import ProductReducer from "./slice/ProductSlice"
-import SearchReducer from "./slice/searchSlice"
+import SearchReducer from "./slice/searchSlice";
+import ChatReducer from "./slice/ChatSlice"
 const store = configureStore({
   reducer: {
     login:LoginReducer,
     cart: cartReducer,
     products:ProductReducer,
-    search:SearchReducer
+    search:SearchReducer,
+    chat:ChatReducer
   },
 });
 

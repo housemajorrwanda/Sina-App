@@ -5,9 +5,8 @@ const Layout=()=>{
         headerShown:false,
         
     }}>
-        <Stack.Screen name="index" />
-        <Stack.Screen name="bus" />
-        <Stack.Screen name="(Chat)" />
+        <Stack.Screen name="allChat" />
+        <Stack.Screen name="[id]" />
         
     </Stack>
 }

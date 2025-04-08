@@ -39,7 +39,7 @@ export default function TabLayout() {
     { name: "(Accounts)", icon: ProfileIcon, inactiveIcon: ProfileUnactive }
   ]
   const tabsToRender=user?.user_data?.is_staff?staffTabs:userTabs
-  console.log("Tab user",user)
+  // console.log("Tab user",user)
   return (
     <Tabs
       screenOptions={{
@@ -48,6 +48,7 @@ export default function TabLayout() {
         headerShown: false,
         tabBarShowLabel: false, // Hides labels
         tabBarButton: HapticTab,
+        tabBarHideOnKeyboard:true,
         tabBarStyle: Platform.select({
           ios: {
             position: "absolute",

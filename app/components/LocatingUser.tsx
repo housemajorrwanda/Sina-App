@@ -41,7 +41,7 @@ const LocationScreen = ({color="third"} ) => {
   return (
     <View className="flex-1 items-start justify-start">
       {/* <Text className="text-white" style={{ fontSize: 12, fontWeight: "bold" }}>Current Location:</Text> */}
-      <Text className={`text-${color}`} style={{ fontSize: 12 }}>{address}</Text>
+      <Text className={`text-${color} font-bold`} style={{ fontSize: 12 }}>{address}</Text>
     </View>
   );
 };

@@ -18,7 +18,8 @@ import {
   TouchableWithoutFeedback,
   Modal,
   FlatList,
-  ActivityIndicator
+  ActivityIndicator,
+  Linking
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import MapView, { Marker, Region } from "react-native-maps";
@@ -34,6 +35,12 @@ import { useSelector, useDispatch } from "react-redux";
 import { useFocusEffect } from "@react-navigation/native";
 import { AppDispatch } from "@/app/store";
 import { fetchOrders } from "@/app/store/slice/cartSlice";
+import { router } from "expo-router";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import axios from "axios";
+import { url } from "@/app/components/url";
+import { changeProfile } from "@/app/store/slice/ChatSlice";
+import LocationScreen from "@/app/components/LocatingUser";
 const index = () => {
   const insets = useSafeAreaInsets();
   const time = new Date().getHours();
@@ -62,7 +69,7 @@ const index = () => {
     }, [dispatch])
   );
 
-  console.log("orders", orders);
+  // console.log("orders", orders);
   const [region, setRegion] = useState<Region | null>(null);
   let greetings;
   if (time < 12) {
@@ -70,7 +77,7 @@ const index = () => {
   } else if (time < 18) {
     greetings = "Good Afternoon";
   } else {
-    greetings = "Good Evining";
+    greetings = "Good Evening";
   }
   const [orderState, setOrderState] = useState("receipt");
   const handleOrderChange = () => {
@@ -84,7 +91,20 @@ const index = () => {
       }
     });
   };
+  const makePhoneCall = () => {
+    const phoneNumber = "0788258922";
+    const url = `tel:${phoneNumber}`;
 
+    Linking.canOpenURL(url)
+      .then((supported) => {
+        if (supported) {
+          Linking.openURL(url);
+        } else {
+          Alert.alert("Error", "Phone calling is not supported on this device");
+        }
+      })
+      .catch((err) => console.error("An error occurred", err));
+  };
   // useEffect(() => {
   //   const interval = setInterval(() => {
   //     handleOrderChange();
@@ -164,6 +184,35 @@ const index = () => {
       </TouchableOpacity>
     );
   };
+  const handleNavigateToChat = async () => {
+    if (user?.user_data?.is_staff) {
+      router.push("/(Chat)/allChat");
+    } else {
+      try {
+        const token = await AsyncStorage.getItem("accessToken");
+        const response = await axios.post(
+          `${url}/messages/room/`,
+          {},
+          {
+            headers: {
+              Authorization: `Token ${token}`,
+              "Content-Type": "application/json"
+            }
+          }
+        );
+        if (response?.data?.id) {
+          const client_data = response?.data?.client_data;
+          await dispatch(changeProfile(client_data));
+        }
+        router.push({
+          pathname: `/(tabs)/(Bus)/(Chat)/${response?.data?.id}`,
+          params: { chatRoomId: response?.data?.id } // ✅ Correct way to pass parameters
+        });
+      } catch (error) {
+        console.log(error);
+      }
+    }
+  };
   return (
     <View className="flex-1 flex flex-col">
       {/* Listing All User Orders */}
@@ -222,12 +271,11 @@ const index = () => {
       >
         <View className="flex-1">
           <ImageBackground
-            className="flex flex-col h-[27vh] relative "
+            className="flex flex-col h-[27vh] relative items-center justify-center "
             style={{ paddingTop: insets.top + 3 }}
             source={require("@/assets/images/payment/Blackbg.png")}
           >
-            <View className="flex flex-row items-start justify-between w-[90%] mx-auto">
-              <Text className="text-white font-bold text-xl">{greetings}</Text>
+            <View className="flex flex-row items-center justify-between  w-[90%] flex-1 mx-auto">
               <View className="flex flex-col justity-center items-center">
                 <View className="w-[20vw] h-[20vw] rounded-full ">
                   <Image
@@ -235,14 +283,20 @@ const index = () => {
                     className="w-20 h-20 rounded-full border border-third"
                   />
                 </View>
-                <Text className="text-white  font-bold text-lg">
+              </View>
+              <View className="items-start justify-center relative h-[100%]">
+                <Text className="text-white font-bold text-xl">
+                  {greetings}
+                </Text>
+                <Text className="text-white  font-bold text-md">
                   {user?.user_data?.full_name || user?.user_data?.phone_number}
                 </Text>
+                <Text className="absolute bottom-3 text-white font-bold text-center font-bold">
+                  <LocationScreen color="white" />
+                </Text>
               </View>
+              <View></View>
             </View>
-            <Text className="text-white text-center font-bold">
-              Kigali-Musanze
-            </Text>
           </ImageBackground>
           {/* Map Vieww */}
           <View className="w-[100%] h-[40vh]">
@@ -291,10 +345,16 @@ const index = () => {
                 </View>
               </View>
               <View className="flex flex-row gap-x-2 w-[45%]">
-                <TouchableOpacity className="w-[12vw] h-[12vw] rounded-full bg-white p-2 flex flex-col items-center justify-center">
+                <TouchableOpacity
+                  onPress={() => makePhoneCall()}
+                  className="w-[12vw] h-[12vw] rounded-full bg-white p-2 flex flex-col items-center justify-center"
+                >
                   <Call />
                 </TouchableOpacity>
-                <TouchableOpacity className="w-[12vw] h-[12vw] rounded-full bg-white p-2 flex flex-col items-center justify-center">
+                <TouchableOpacity
+                  onPress={() => handleNavigateToChat()}
+                  className="w-[12vw] h-[12vw] rounded-full bg-white p-2 flex flex-col items-center justify-center"
+                >
                   <Chat />
                 </TouchableOpacity>
               </View>
@@ -370,8 +430,13 @@ const index = () => {
                     </View>
                   </View>
                 ) : (
-                  <TouchableOpacity className="bg-third/20 py-3 rounded-full  px-3 " onPress={() => setClosed(true)}>
-                    <Text className="font-bold">Please Choose to Track it's Progress</Text>
+                  <TouchableOpacity
+                    className="bg-third/20 py-3 rounded-full  px-3 "
+                    onPress={() => setClosed(true)}
+                  >
+                    <Text className="font-bold">
+                      Please Choose to Track it's Progress
+                    </Text>
                   </TouchableOpacity>
                 )}
               </View>

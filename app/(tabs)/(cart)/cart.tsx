@@ -49,8 +49,8 @@ const CombinedScreen = () => {
       <Text className="text-secondary text-center text-2xl font-bold my-10">
         Checkout
       </Text>
-      <View>
-        <ScrollView>
+      <View className="flex-1">
+        <ScrollView showsVerticalScrollIndicator={false} className="flex-1">
           {cartProducts?.length == 0 ? (
             <View className="flex-1 flex- flex-col items-center justify-center ">
               <Text className="text-third">
@@ -99,9 +99,7 @@ const CombinedScreen = () => {
               </TouchableOpacity>
             ))
           )}
-        </ScrollView>
-      </View>
-      {cartProducts?.length > 0 && (
+          {cartProducts?.length > 0 && (
         <>
           <View className="bg-white p-4 my-8 rounded-3xl border border-secondary border-b-4">
             <View className="flex-row items-center justify-between pr-4">
@@ -119,7 +117,7 @@ const CombinedScreen = () => {
               </Text>
               <Text className="text-lg font-semibold text-gray-700">
                 
-                None
+                0
               </Text>
             </View>
             <View className="flex-row items-center justify-between pr-4 ">
@@ -127,7 +125,7 @@ const CombinedScreen = () => {
                 Discount Rate
               </Text>
               <Text className="text-lg font-semibold text-gray-700">
-                None
+                0
               </Text>
             </View>
             <View className="flex-row items-center justify-between pr-4">
@@ -156,6 +154,9 @@ const CombinedScreen = () => {
           </TouchableOpacity>
         </>
       )}
+        </ScrollView>
+      </View>
+      
     </View>
   );
 };

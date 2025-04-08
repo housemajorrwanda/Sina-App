@@ -1,4 +1,13 @@
-import { View, Text, Image, Alert, ActivityIndicator, ScrollView, TouchableOpacity } from "react-native";
+import {
+  View,
+  Text,
+  Image,
+  Alert,
+  ActivityIndicator,
+  ScrollView,
+  TouchableOpacity,
+  Keyboard
+} from "react-native";
 import { useEffect } from "react";
 import Input from "@/components/input/Input";
 import PrimaryButton from "@/components/button/PrimaryButton";
@@ -12,6 +21,7 @@ import { AppDispatch } from "./store";
 import { getProfile, loginUser } from "./store/slice/LoginSlice";
 import * as LocalAuthentication from "expo-local-authentication";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+
 const LoginScreen = () => {
   const [isChecked, setChecked] = useState(false);
   const [phone_number, setPhoneNumber] = useState<string>("");
@@ -22,48 +32,50 @@ const LoginScreen = () => {
   const router = useRouter();
   const dispatch = useDispatch<AppDispatch>();
   const LocalAuthenticating = async () => {
-    const token=await AsyncStorage.getItem("accessToken");
-    if(!token){
+    const token = await AsyncStorage.getItem("accessToken");
+    if (!token) {
       return;
     }
-      try {
-        const supported = await LocalAuthentication.hasHardwareAsync();
-        if (!supported) {
-          console.log("Local authentication is not supported on this device");
-          return;
-        }
-    
-        const enrolled = await LocalAuthentication.isEnrolledAsync();
-        if (!enrolled) {
-          console.log("No biometric authentication methods are enrolled");
-          return;
-        }
-    
-        const result = await LocalAuthentication.authenticateAsync({
-          promptMessage: "Unlock your app",
-        });
-    
-        if (result.success) {
-          const result=await dispatch(getProfile())
-          if(getProfile.rejected.match(result)) {
-            Alert.alert("Login Authenticate you Please use phone number and your password",)
-              
-            return;
-          }
-          if(getProfile.fulfilled.match(result)) {
-            // AsyncStorage.setItem("accessToken", result?.payload?.access_token);
-            router.push("/(tabs)/home")
-          }
-        } else {
-          console.log("Authentication failed!");
-        }
-      } catch (e) {
-        console.error("Error performing local authentication: ", e);
+    try {
+      const supported = await LocalAuthentication.hasHardwareAsync();
+      if (!supported) {
+        console.log("Local authentication is not supported on this device");
+        return;
       }
-    };
-    useEffect(() => {
-      LocalAuthenticating();
-    }, []);
+
+      const enrolled = await LocalAuthentication.isEnrolledAsync();
+      if (!enrolled) {
+        console.log("No biometric authentication methods are enrolled");
+        return;
+      }
+
+      const result = await LocalAuthentication.authenticateAsync({
+        promptMessage: "Unlock your app"
+      });
+
+      if (result.success) {
+        const result = await dispatch(getProfile());
+        if (getProfile.rejected.match(result)) {
+          Alert.alert(
+            "Login Authenticate you Please use phone number and your password"
+          );
+
+          return;
+        }
+        if (getProfile.fulfilled.match(result)) {
+          // AsyncStorage.setItem("accessToken", result?.payload?.access_token);
+          router.push("/(tabs)/home");
+        }
+      } else {
+        console.log("Authentication failed!");
+      }
+    } catch (e) {
+      console.error("Error performing local authentication: ", e);
+    }
+  };
+  useEffect(() => {
+    LocalAuthenticating();
+  }, []);
   const LoginFunctionality = async () => {
     if (!isChecked) {
       return Alert.alert(
@@ -72,28 +84,57 @@ const LoginScreen = () => {
         [
           { text: "Cancel", onPress: () => setChecked(false) },
           { text: "OK", onPress: () => setChecked(true) }
-          
         ]
       );
     }
     try {
-      const result:any = await dispatch(
+      const result: any = await dispatch(
         loginUser({ phone_number: phone_number, password: password })
       );
       console.log(result);
-      if(loginUser.rejected.match(result)) {
-        Alert.alert("Login Failed", result?.payload?.error || "Failed to logs you in ");
+      if (loginUser.rejected.match(result)) {
+        Alert.alert(
+          "Login Failed",
+          result?.payload?.error || "Failed to logs you in "
+        );
         return;
       }
-      router.push("/(tabs)/home")
+      router.push("/(tabs)/home");
       // console.log(await result)
     } catch (error: any) {
-      console.log(error)
+      console.log(error);
       Alert.alert("Login Failed", error.message);
     }
-
-    
   };
+  const [isKeyboardVisible, setKeyboardVisible] = useState(false);
+  const navigation = useNavigation();
+
+  useEffect(() => {
+    const keyboardDidShowListener = Keyboard.addListener(
+      "keyboardDidShow",
+      () => {
+        setKeyboardVisible(true);
+      }
+    );
+
+    const keyboardDidHideListener = Keyboard.addListener(
+      "keyboardDidHide",
+      () => {
+        setKeyboardVisible(false);
+      }
+    );
+
+    return () => {
+      keyboardDidShowListener.remove();
+      keyboardDidHideListener.remove();
+    };
+  }, []);
+  useEffect(() => {
+    navigation.setOptions({
+      tabBarStyle: isKeyboardVisible ? { display: "none" } : undefined
+    });
+  }, [isKeyboardVisible, navigation]);
+
   return (
     <ScrollView className="flex-1 bg-white" style={{ paddingTop: insets.top }}>
       <View>
@@ -126,7 +167,10 @@ const LoginScreen = () => {
 
         <View className=" flex-row items-center justify-between p-6">
           {/* Google Sign-In */}
-          <TouchableOpacity onPress={()=>Alert.alert("Coming Soon")} className="flex-row items-center bg-white px-2 py-3 rounded-md border border-black  px-4 ">
+          <TouchableOpacity
+            onPress={() => Alert.alert("Coming Soon")}
+            className="flex-row items-center bg-white px-2 py-3 rounded-md border border-black  px-4 "
+          >
             <View>
               <Image source={Icons.google} resizeMode="contain" />
             </View>
@@ -134,7 +178,10 @@ const LoginScreen = () => {
           </TouchableOpacity>
 
           {/* Apple Sign-In */}
-          <TouchableOpacity onPress={()=>Alert.alert("Coming Soon")} className="flex-row items-center bg-white pr-6 px-4 py-3 rounded-md border border-black shadow-md ">
+          <TouchableOpacity
+            onPress={() => Alert.alert("Coming Soon")}
+            className="flex-row items-center bg-white pr-6 px-4 py-3 rounded-md border border-black shadow-md "
+          >
             <Image source={Icons.apple} resizeMode="contain" />
             <Text className="px-4 text-gray-500">with Apple</Text>
           </TouchableOpacity>
@@ -180,11 +227,13 @@ const LoginScreen = () => {
         </View>
       </View>
       <View className="items-center ">
-        <Image
-          source={Icons.finger}
-          className="w-16 h-16 mb-6"
-          resizeMode="contain"
-        />
+        <TouchableOpacity onPress={() => LocalAuthenticating()}>
+          <Image
+            source={Icons.finger}
+            className="w-16 h-16 mb-6"
+            resizeMode="contain"
+          />
+        </TouchableOpacity>
         <View className="flex-row items-center mt-1">
           <Checkbox
             className="mr-2"

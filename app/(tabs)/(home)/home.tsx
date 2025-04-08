@@ -29,7 +29,8 @@ import * as LocalAuthentication from "expo-local-authentication";
 import { useSelector, useDispatch } from "react-redux";
 import { AppDispatch } from "../../store";
 import { setSearchResults } from "@/app/store/slice/searchSlice";
-import QRcode from "@/assets/images/qr-code.svg";
+// import QRcode from "@/assets/images/qr-code.svg";
+import QrCode from "@/assets/images/QrCode.svg";
 // @ts-ignore
 
 // import Student from "../../assets/images/student.webp";
@@ -160,10 +161,13 @@ const HomeScreen = () => {
   }, [products]);
   // console.log(user)
   return (
-    <View className="flex-1 bg-white" style={{ paddingTop: insets.top }}>
-      {loading && <ActivityIndicator size="large" color="#F1A10C" collapsable />}
+    <View className="flex-1 " style={{ paddingTop: insets.top }}>
+      {loading && (
+        <ActivityIndicator size="large" color="#F1A10C" collapsable />
+      )}
       {isSeeAll ? (
-        <ScrollView className="flex-1 pb-10" stickyHeaderIndices={[4]}>
+        <ScrollView className="flex-1 pb-10 py-2 bg-white" stickyHeaderIndices={[4]}>
+          
           <View className="flex-row items-center justify-between mx-4">
             <TouchableOpacity
               onPress={() => setIsSeeAll(false)}
@@ -210,7 +214,18 @@ const HomeScreen = () => {
           </View>
 
           {/* Search Bar */}
-          <View className="px-5 mt-3 flex-row items-center bg-white rounded-full py-2 mx-4 border-b-4 border-l border-r border-secondary">
+          <View
+            className="px-5 mt-3 flex-row items-center bg-white rounded-full py-2 mx-4 z-10 my-2"
+            style={{
+              shadowColor: "#2B6128",
+              shadowOffset: { width: 0, height: 4 }, // adds shadow only below on iOS
+              shadowOpacity: 1,
+              shadowRadius: 4,
+              elevation: 6, // visible shadow on Android
+              zIndex:10,
+              backgroundColor:'white'
+            }}
+          >
             <TouchableOpacity onPress={() => handleSearch()}>
               <Octicons name="search" size={24} color="black" />
             </TouchableOpacity>
@@ -268,23 +283,52 @@ const HomeScreen = () => {
               >
                 {(search.trim() ? filteredProducts : products)?.map(
                   (item: any, index: number) => (
-                    <View key={item.id} className="p-1 w-[33.33%]">
+                    <TouchableOpacity
+                      key={item.id}
+                      onPress={() =>
+                        router.push(`/(tabs)/(home)/(products)/${item?.id}`)
+                      }
+                      className="p-1 w-[33.33%] flex flex-col "
+                    >
                       {/* Ensure three columns */}
-                      <View className="relative bg-third p-3 rounded-3xl">
-                        <Image
-                          source={{ uri: item?.thumbnail }}
-                          className="w-16 h-16 mx-auto rounded-full"
-                          resizeMode="cover"
-                        />
-                        <Text className="text-secondary font-bold text-center mt-2">
+                      <View
+                        style={{
+                          height: Dimensions.get("screen").height * 0.19
+                        }}
+                        className="relative bg-[#F1A10C] items-center justify-center px-3 gap-y-2 py-3 rounded-3xl"
+                      >
+                        <View
+                          className="rounded-full overflow-hidden items-center justify-center flex flex-col"
+                          style={{
+                            height: Dimensions.get("screen").height * 0.1,
+                            width: Dimensions.get("screen").height * 0.1
+                          }}
+                        >
+                          <Image
+                            source={{ uri: item?.thumbnail }}
+                            className="mx-auto "
+                            resizeMode="cover"
+                            style={{
+                              height: Dimensions.get("screen").height * 0.1,
+                              width: Dimensions.get("screen").height * 0.1
+                            }}
+                          />
+                        </View>
+                        <Text
+                          numberOfLines={1}
+                          ellipsizeMode="tail"
+                          className="text-secondary font-bold text-center mt-2"
+                        >
                           {item?.name}
                         </Text>
-                        <View className="flex-row items-center justify-between">
+                        <View className="flex flex-row items-center w-[100%] justify-between">
                           <Text className="text-secondary text-xs font-semibold">
                             {item?.price?.split(".")[0]} Rwf
                           </Text>
                           <Text className="text-secondary text-xs">
-                            {item?.is_pick_and_go ? "Pick&GO" : item?.delivery}
+                            {item?.is_pick_and_go
+                              ? "Pick&GO"
+                              : item?.delivery || "15 min"}
                           </Text>
                         </View>
                         {cartCheck(item.id) ? (
@@ -311,7 +355,7 @@ const HomeScreen = () => {
                           </TouchableOpacity>
                         )}
                       </View>
-                    </View>
+                    </TouchableOpacity>
                   )
                 )}
               </View>
@@ -319,7 +363,7 @@ const HomeScreen = () => {
           </View>
         </ScrollView>
       ) : (
-        <SafeAreaView className="flex-1 bg-white">
+        <View className="flex-1 bg-white">
           <KeyboardAvoidingView
             behavior={Platform.OS === "ios" ? "padding" : "height"}
             className="flex-1"
@@ -353,7 +397,15 @@ const HomeScreen = () => {
               </View>
 
               {/* Search Bar */}
-              <View className="px-5 mt-3 flex-row items-center bg-white rounded-full py-2 mx-4 border-b-4 border-l border-r border-secondary">
+              <View style={{
+              shadowColor: "#2B6128",
+              shadowOffset: { width: 0, height: 4 }, // adds shadow only below on iOS
+              shadowOpacity: 1,
+              shadowRadius: 4,
+              elevation: 6, // visible shadow on Android
+              zIndex:10,
+              backgroundColor:'white'
+            }} className="px-5 mt-3 flex-row items-center bg-white rounded-full  py-2 mx-4 ">
                 <TouchableOpacity onPress={() => handleSearchs()}>
                   <Octicons name="search" size={24} color="black" />
                 </TouchableOpacity>
@@ -378,32 +430,30 @@ const HomeScreen = () => {
                     Special Order
                   </Text>
                 </TouchableOpacity>
-                {user?.user_data?.is_staff && (
+
+                <View className="flex flex-row items-center gap-x-4">
+                  {user?.user_data?.is_staff && (
+                    <TouchableOpacity
+                      onPress={() => router.push("/(QrScan)")}
+                      className=""
+                    >
+                      <QrCode />
+                    </TouchableOpacity>
+                  )}
                   <TouchableOpacity
-                    onPress={() => router.push("/(QrScan)")}
-                    className=""
+                    className="relative flex flex-col "
+                    onPress={() => router.push("/(cart)")}
                   >
-                    <Ionicons
-                      name="scan"
-                      size={Dimensions.get("window").width * 0.1}
-                      color={"#2B6128"}
+                    <View className="absolute -top-3 -right-3 bg-third w-5 h-5 flex flex-col items-center justify-center rounded-full z-10">
+                      <Text className="text-xs ">{cartState?.length}</Text>
+                    </View>
+                    <FontAwesome5
+                      name="shopping-cart"
+                      size={24}
+                      color="#2B6128"
                     />
                   </TouchableOpacity>
-                )}
-
-                <TouchableOpacity
-                  className="relative flex flex-col "
-                  onPress={() => router.push("/(cart)")}
-                >
-                  <View className="absolute -top-3 -right-3 bg-third w-5 h-5 flex flex-col items-center justify-center rounded-full z-10">
-                    <Text className="text-xs ">{cartState?.length}</Text>
-                  </View>
-                  <FontAwesome5
-                    name="shopping-cart"
-                    size={24}
-                    color="#2B6128"
-                  />
-                </TouchableOpacity>
+                </View>
               </View>
 
               {/* Categories */}
@@ -467,34 +517,19 @@ const HomeScreen = () => {
                     >
                       {category?.products?.map(
                         (product: any, index: number) => (
-                          <View
+                          <TouchableOpacity
+                            onPress={() =>
+                              router.push(
+                                `/(tabs)/(home)/(products)/${product.id}`
+                              )
+                            }
                             key={index}
-                            className="relative w-36 h-34 bg-third p-3 rounded-3xl mx-2"
+                            className="relative   bg-third px-3 py-3 pt-1 pb-4 flex flex-col gap-y-1  rounded-3xl mx-2"
+                            style={{
+                              // height: Dimensions.get("screen").height * 0.21,
+                              width: Dimensions.get("screen").width * 0.33
+                            }}
                           >
-                            {/* Product Image */}
-                            <Image
-                              source={{ uri: product.thumbnail }}
-                              className="w-16 h-16 mx-auto rounded-full"
-                            />
-
-                            {/* Global Name */}
-                            <Text className="text-secondary font-bold text-center mt-2">
-                              {product.name}
-                            </Text>
-
-                            {/* Price */}
-                            <View className="flex-row items-center justify-between ">
-                              <Text className="text-secondary text-sm text-center font-semibold">
-                                {product.price}
-                              </Text>
-
-                              {/* Delivery Time */}
-                              <Text className="text-secondary text-xs text-center">
-                                {product.delivery || "15min"}
-                              </Text>
-                            </View>
-
-                            {/* Floating Add Button */}
                             {cartCheck(product.id) ? (
                               <TouchableOpacity
                                 onPress={() => {
@@ -502,7 +537,7 @@ const HomeScreen = () => {
                                     removeFromCart({ product, quantity: 1 })
                                   );
                                 }}
-                                className="absolute top-2 right-2 bg-secondary w-6 h-6 rounded-full flex items-center justify-center"
+                                className="self-end absolute top-2  right-1 bg-secondary w-6 h-6 rounded-full flex items-center justify-center"
                               >
                                 <AntDesign
                                   name="minus"
@@ -515,7 +550,7 @@ const HomeScreen = () => {
                                 onPress={() => {
                                   dispatch(addToCart({ product, quantity: 1 }));
                                 }}
-                                className="absolute top-2 right-2 bg-secondary w-6 h-6 rounded-full flex items-center justify-center"
+                                className="absolute  top-2 right-1 bg-secondary w-6 h-6 rounded-full flex items-center justify-center"
                               >
                                 <Foundation
                                   name="plus"
@@ -524,7 +559,41 @@ const HomeScreen = () => {
                                 />
                               </TouchableOpacity>
                             )}
-                          </View>
+                            {/* Product Image */}
+                            <Image
+                              source={{ uri: product.thumbnail }}
+                              className=" mx-auto rounded-full"
+                              style={{
+                                height: Dimensions.get("screen").height * 0.1,
+                                width: Dimensions.get("screen").height * 0.1
+                              }}
+                            />
+
+                            {/* Global Name */}
+                            <Text
+                              numberOfLines={1}
+                              ellipsizeMode="tail"
+                              className="text-secondary font-bold text-center mt-2"
+                            >
+                              {product.name}
+                            </Text>
+
+                            {/* Price */}
+                            <View className="flex-row items-center justify-between ">
+                              <Text className="text-secondary text-sm text-center font-semibold">
+                                {product.price}
+                              </Text>
+
+                              {/* Delivery Time */}
+                              <Text className="text-secondary text-xs text-center">
+                                {product?.delivery ||
+                                  (product?.is_pick_and_go && "Pick&Go") ||
+                                  "15min"}
+                              </Text>
+                            </View>
+
+                            {/* Floating Add Button */}
+                          </TouchableOpacity>
                         )
                       )}
                     </ScrollView>
@@ -533,7 +602,7 @@ const HomeScreen = () => {
               )}
             </ScrollView>
           </KeyboardAvoidingView>
-        </SafeAreaView>
+        </View>
       )}
     </View>
   );

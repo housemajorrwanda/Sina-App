@@ -6,7 +6,7 @@ const Layout=()=>{
         
     }}>
         <Stack.Screen name="accounts" />
-        {/* <Stack.Screen name="[id]" /> */}
+        {/* <Stack.Screen name="(Chat)" /> */}
         
     </Stack>
 }

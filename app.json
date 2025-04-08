@@ -18,6 +18,10 @@
       },
       "splash": {
         "backgroundColor": "#2B6128"
+      },
+      "bundleIdentifier": "com.ngoga.SINAAPP",
+      "infoPlist": {
+        "ITSAppUsesNonExemptEncryption": false
       }
     },
     "android": {
@@ -74,6 +78,12 @@
       "eas": {
         "projectId": "f08199ad-0461-4a3b-bb4f-26d00cb6b66f"
       }
+    },
+    "runtimeVersion": {
+      "policy": "appVersion"
+    },
+    "updates": {
+      "url": "https://u.expo.dev/f08199ad-0461-4a3b-bb4f-26d00cb6b66f"
     }
   }
 }

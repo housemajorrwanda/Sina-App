@@ -12,7 +12,7 @@ export default function PageStack(){
                 <Stack.Screen name="payment"  />
                 {/* Add more screens here */}
             </Stack>
-            <StatusBar style="auto" />
+            {/* <StatusBar style="auto" /> */}
         </ThemeProvider>
     )
 }
